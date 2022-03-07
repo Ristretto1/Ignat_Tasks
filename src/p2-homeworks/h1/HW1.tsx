@@ -2,7 +2,7 @@ import React from 'react'
 import Message from "./Message";
 
 const messageData = {
-    avatar: 'http://risovach.ru/upload/2020/06/mem/bolshaya-zheltaya-utochka_243433091_orig_.jpg',
+    avatar: 'https://sun9-74.userapi.com/Ph-WiuOtF985il9AvN9JqiCWedmHtSGSSTXrSA/ltEB2Z2-YO4.jpg',
     name: 'Some Name',
     message: 'some text',
     time: '22:00',
