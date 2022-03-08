@@ -1,4 +1,3 @@
-
 import React from 'react'
 import {AffairType} from "./HW2";
 import s from './Affair.module.css'
@@ -10,10 +9,10 @@ type AffairPropsType = {
 }
 
 function Affair(props: AffairPropsType) {
-    const deleteCallback = () => props.deleteAffairCallback(props.affair._id)// need to fix
+    const deleteCallback = () => props.deleteAffairCallback(props.affair._id)
 
     return (
-        <div className={s.affairlist}>
+        <div className={s.affairItem}>
             <span>{props.affair.name}</span>
             <span>{props.affair.priority}</span>
             <button onClick={deleteCallback}>X</button>
