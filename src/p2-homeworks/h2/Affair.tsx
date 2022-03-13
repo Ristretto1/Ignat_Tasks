@@ -1,5 +1,5 @@
 import React from 'react'
-import {AffairType} from "./HW2";
+import {AffairType} from './HW2';
 import s from './Affair.module.css'
 
 type AffairPropsType = {
