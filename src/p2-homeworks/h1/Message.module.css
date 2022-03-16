@@ -43,6 +43,7 @@
 }
 
 .time {
+    font-size: 12px;
     align-self: flex-end;
     color: rgba(255, 255, 255, 0.3);
     margin-left: 10px;
