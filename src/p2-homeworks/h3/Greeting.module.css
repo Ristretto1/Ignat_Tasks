@@ -1,7 +1,21 @@
-.btnError {
-
+.errorText {
+    color: red;
+    font-weight: bold;
 }
 
 .error {
     border: 1px solid red;
+}
+
+.inputBlock {
+    display: flex;
+}
+
+.errorWrapper {
+    display: flex;
+    flex-direction: column;
+}
+.inputBlock button {
+    margin: 0 15px;
+    align-self: flex-start;
 }
