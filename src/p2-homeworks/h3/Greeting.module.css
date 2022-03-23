@@ -5,3 +5,22 @@
 .error {
     border: 1px solid red;
 }
+
+.inputBlock {
+    display: flex;
+}
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputWrapper span {
+    color: red;
+}
+
+.btn {
+    align-self: flex-start;
+    margin: 0 10px;
+}
+
