@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react'
+import React, {ChangeEvent, useState} from 'react'
 import Greeting from './Greeting'
 import {UserType} from './HW3';
 
@@ -7,33 +7,22 @@ type GreetingContainerPropsType = {
     addUserCallback: (name: string) => void
 }
 
-// более простой и понятный для новичков
-// function GreetingContainer(props: GreetingPropsType) {
+const GreetingContainer: React.FC<GreetingContainerPropsType> = ({users, addUserCallback}) => {
+    const [name, setName] = useState<string>('')
+    const [error, setError] = useState<string>('')
 
-// более современный и удобный для про :)
-// уровень локальной логики
-const GreetingContainer: React.FC<GreetingContainerPropsType> = ({users, addUserCallback}) => { // деструктуризация пропсов
-    const [name, setName] = useState<string>('') // need to fix any
-    const [error, setError] = useState<string>('') // need to fix any
-
-    const setNameCallback = (e: ChangeEvent<HTMLInputElement>) => { // need to fix any
-        setName(e.currentTarget.value) // need to fix
+    const setNameCallback = (e: ChangeEvent<HTMLInputElement>) => {
+        setName(e.currentTarget.value)
     }
-
-    const onKetPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') addUser()
-    }
-
     const addUser = () => {
-        if (name) {
-            setError('')
-            addUserCallback(name)
-            alert(`Hello ${name} !`)
-            setName('')
-        } else {
-            setError('Введите своё имя')
+        if(!name.trim()) {
+            setError('Поле обязательно')
+            return
         }
-
+        setError('')
+        alert(`Hello, ${name}!`)
+        addUserCallback(name)
+        setName('')
     }
 
     const totalUsers = users.length
@@ -45,7 +34,6 @@ const GreetingContainer: React.FC<GreetingContainerPropsType> = ({users, addUser
             addUser={addUser}
             error={error}
             totalUsers={totalUsers}
-            onKetPressHandler={onKetPressHandler}
         />
     )
 }
