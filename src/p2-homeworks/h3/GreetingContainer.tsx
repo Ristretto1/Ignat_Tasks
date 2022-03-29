@@ -16,7 +16,7 @@ const GreetingContainer: React.FC<GreetingContainerPropsType> = ({users, addUser
         setError('')
     }
     const addUser = () => {
-        if(!name.trim()) {
+        if (!name.trim()) {
             setError('Поле обязательно')
             return
         }
