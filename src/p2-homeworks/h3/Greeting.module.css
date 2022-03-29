@@ -1,13 +1,12 @@
-.someClass {
-
-}
-
-.error {
-    border: 1px solid red;
-}
-
 .inputBlock {
     display: flex;
+    justify-content: center;
+}
+
+.inputBlock button {
+    align-self: flex-start;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .inputWrapper {
@@ -15,12 +14,4 @@
     flex-direction: column;
 }
 
-.inputWrapper span {
-    color: red;
-}
-
-.btn {
-    align-self: flex-start;
-    margin: 0 10px;
-}
 
