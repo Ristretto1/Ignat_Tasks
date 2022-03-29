@@ -1,12 +1,24 @@
 .superInput {
+    border: 1px solid #787777;
+    padding: 5px 15px;
+    border-radius: 5px;
+    opacity: 0.5;
+    margin-top: 10px;
+}
 
+.superInput:focus {
+    opacity: 1;
+    outline: none;
+}
+
+.superInput::placeholder {
+    font-size: 12px;
 }
 
 .errorInput {
-    border: 3px solid lime;
-    background: red;
+    border: 1px solid #ff0000;
 }
 
 .error {
-    color: red;
+    color: #ff0000;
 }
