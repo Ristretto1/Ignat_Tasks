@@ -1,8 +1,7 @@
 import React from 'react'
-import Routes from '../h5/Routes';
 import PreJunior from './pages/PreJunior';
 import Error404 from './pages/Error404';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Routes, Route } from 'react-router-dom';
 
 export const PATH = {
     PRE_JUNIOR: '/pre-junior',
