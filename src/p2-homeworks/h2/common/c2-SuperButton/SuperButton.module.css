@@ -1,0 +1,36 @@
+.default {
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+
+    border: 1px solid #333;
+    color: #333;
+    background: none;
+    cursor: pointer;
+}
+
+.default:hover {
+    color: white;
+    background: #333;
+}
+
+.default:disabled {
+    opacity: 0.3;
+    cursor: auto;
+}
+
+.default:disabled:hover {
+    color: #333;
+    background: none;
+}
+
+.red {
+    background: none;
+    border: 1px solid red;
+    color: red;
+}
+
+.red:hover {
+    background: red;
+    color: white;
+}
