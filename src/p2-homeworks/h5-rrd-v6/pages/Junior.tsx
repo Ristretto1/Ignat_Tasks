@@ -1,21 +1,12 @@
-import React from 'react'
-import HW7 from '../../h7/HW7'
-import HW8 from '../../h8/HW8'
-import HW9 from '../../h9/HW9'
-import HW10 from '../../h10/HW10'
 
-function Junior() {
+import React from 'react';
+
+const Junior = () => {
     return (
         <div>
-            <HW7/>
-            <HW8/>
-            <HW9/>
-            <HW10/>
+            <h1>Домашние задания Джун</h1>
         </div>
-    )
-}
+    );
+};
 
-export default Junior
-
-// сделайте по аналогии пустые страницы джун и джун+
-// туда будут добавляться следующие дз
+export default Junior;

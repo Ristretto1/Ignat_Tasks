@@ -1,0 +1,28 @@
+.menuList {
+    margin: 15px 0 15px 15px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.menuList button {
+    margin: 0;
+}
+
+.menuList li {
+    margin-right: 20px;
+}
+
+.menuList a {
+    text-decoration: none;
+    color: #848383;
+}
+
+.menuList a:hover {
+    color: black;
+}
+
+.hidden {
+    display: none;
+}
