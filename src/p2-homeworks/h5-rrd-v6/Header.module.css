@@ -14,9 +14,10 @@
     margin-right: 20px;
 }
 
-.menuList a {
+.menuListLink {
     text-decoration: none;
     color: #848383;
+    margin-right: 20px;
 }
 
 .menuList a:hover {
@@ -25,4 +26,8 @@
 
 .hidden {
     display: none;
+}
+
+.active {
+    color:cornflowerblue;
 }
