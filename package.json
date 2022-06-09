@@ -20,7 +20,7 @@
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.0"
   },
-  "homepage": "https://Ristretto1.github.io/Ignat_Tasks",
+  "homepage": "https://ristretto1.github.io/inc_ignatTasks/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
