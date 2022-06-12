@@ -22,7 +22,13 @@ function HW8() {
 
     const finalPeople = people.map((p: UserType) => (
         <div key={p._id}
-             style={{width: '200px', display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid', margin: '5px 15px 0'}}>
+             style={{
+                 width: '200px',
+                 display: 'flex',
+                 justifyContent: 'space-between',
+                 borderBottom: '1px solid',
+                 margin: '5px 15px 0'
+             }}>
             <span>{p.name}</span>
             <span>{p.age}</span>
         </div>
@@ -33,24 +39,27 @@ function HW8() {
     const check = () => setPeople(homeWorkReducer(initialPeople, {type: 'check', payload: 18}))
 
     return (
-        <div>
-            <hr/>
-            homeworks 8
+        <>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <hr/>
+                homeworks 8
 
-            {/*should work (должно работать)*/}
-            {finalPeople}
+                {/*should work (должно работать)*/}
+                {finalPeople}
 
-            <div>
-                <SuperButton onClick={sortUp}>sort up</SuperButton>
-                <SuperButton onClick={sortDown}>sort down</SuperButton>
-                <SuperButton onClick={check}>check 18</SuperButton>
+                <div>
+                    <SuperButton onClick={sortUp}>sort up</SuperButton>
+                    <SuperButton onClick={sortDown}>sort down</SuperButton>
+                    <SuperButton onClick={check}>check 18</SuperButton>
+                </div>
+
+
             </div>
-
             <hr/>
             {/*для личного творчества, могу проверить*/}
             {/*<AlternativePeople/>*/}
             <hr/>
-        </div>
+        </>
     )
 }
 
