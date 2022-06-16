@@ -12,16 +12,24 @@ function HW11() {
             homeworks 11
 
             {/*should work (должно работать)*/}
-            <div>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <span>{value1}</span>
                 <SuperRange
+                    onChangeRange={setValue1}
+                    value={value1}
                     // сделать так чтоб value1 изменялось
                 />
             </div>
+            <hr/>
 
-            <div>
+
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <span>{value1}</span>
                 <SuperDoubleRange
+                    setValue1={setValue1}
+                    setValue2={setValue2}
+                    value={[value1, value2]}
+
                     // сделать так чтоб value1 и value2 изменялось
                 />
                 <span>{value2}</span>
