@@ -1,14 +1,14 @@
 import React from 'react'
 import PreJunior from './pages/PreJunior';
 import Error404 from './pages/Error404';
-import { Navigate, Routes, Route } from 'react-router-dom';
+import {Navigate, Routes, Route} from 'react-router-dom';
 import Junior from './pages/Junior';
 import JuniorPlus from './pages/JuniorPlus';
 
 export const PATH = {
     PRE_JUNIOR: '/pre-junior',
     JUNIOR: '/junior',
-    JUNIOR_PLUS: '/junior_plus',
+    JUNIOR_PLUS: '/junior-plus',
 }
 
 function Pages() {
