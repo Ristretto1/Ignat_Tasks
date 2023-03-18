@@ -7,10 +7,12 @@
     font-weight: bold;
     font-size: 14px;
     line-height: 20px;
+    box-sizing: border-box;
 }
 
 .disabled {
     background: #004D99;
+    border: 1px solid #004D99;
     color: #002E5C;
     opacity: 0.5;
 }
@@ -23,19 +25,23 @@
 
 .default {
     background: #0066CC;
+    border: 1px solid #0066CC;
+
 }
 
 .red {
     background: #CC1439;
+    border: 1px solid #CC1439;
 }
 
 .default:hover {
     background: #0080FF;
+    border: 1px solid #0080FF;
 }
 
 .red:hover {
     background: #FF1A47;
-
+    border: 1px solid #FF1A47;
 }
 
 .secondary:hover {
