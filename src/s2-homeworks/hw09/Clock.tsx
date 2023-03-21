@@ -34,7 +34,7 @@ function Clock() {
   }
 
   let finishDate = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
-  let finishMonth = date.getMonth() < 10 ? `0${date.getMonth()}` : date.getMonth()
+  let finishMonth = date.getMonth() < 10 ? `0${date.getMonth() + 1}` : date.getMonth()
 
   let finishHours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
   let finishMinutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
@@ -48,7 +48,7 @@ function Clock() {
 
   // день недели на английском, месяц на английском (https://learn.javascript.ru/intl#intl-datetimeformat)
   const stringDay = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(
-    new Date(date.getFullYear(), date.getMonth(), date.getDay()),
+    new Date(date.getFullYear(), date.getMonth(), date.getDay() - 2),
   ) || <br /> // пишут студенты
   const stringMonth = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
     new Date(date.getFullYear(), date.getMonth(), date.getDay()),
@@ -85,14 +85,14 @@ function Clock() {
       <div className={s.buttonsContainer}>
         <SuperButton
           id={'hw9-button-start'}
-          disabled={show} // пишут студенты // задизэйблить если таймер запущен
+          disabled={timerId !== undefined} // пишут студенты // задизэйблить если таймер запущен
           onClick={start}
         >
           start
         </SuperButton>
         <SuperButton
           id={'hw9-button-stop'}
-          disabled={show} // пишут студенты // задизэйблить если таймер не запущен
+          disabled={timerId === undefined} // пишут студенты // задизэйблить если таймер не запущен
           onClick={stop}
         >
           stop
