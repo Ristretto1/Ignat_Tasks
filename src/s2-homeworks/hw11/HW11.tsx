@@ -39,7 +39,7 @@ function HW11() {
               id={'hw11-single-slider'}
               // сделать так чтоб value1 изменялось // пишет студент
               value={value1}
-              onChange={e => change(e, value1)}
+              onChange={change}
             />
           </div>
           <div className={s.wrapper}>
@@ -50,7 +50,7 @@ function HW11() {
               id={'hw11-double-slider'}
               // сделать так чтоб value1/2 изменялось // пишет студент
               value={[value1, value2]}
-              onChange={e => change(e, [value1, value2])}
+              onChange={change}
             />
             <span id={'hw11-value-2'} className={s.number}>
               {value2}
