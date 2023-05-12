@@ -1,7 +1,3 @@
-table {
-    border-collapse:collapse;
-}
-
 .item {
 }
 
@@ -9,36 +5,19 @@ table {
 }
 
 .users {
-    width: 100%;
 }
 
 .buttonsContainer {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
 }
 
 .container {
-    width: 606px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
 }
 
 .thead {
-    height: 36px;
-    background: #E5E5E5;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 16px;
 }
 
 .nameCol {
-    width: 50%;
-    padding: 17px;
-    border-top: 1px solid #E5E5E5;
 }
 
 .ageCol {
-    border-top: 1px solid #E5E5E5;
 }

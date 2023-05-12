@@ -1,17 +1,9 @@
 .select {
-    width: 165px;
-    height: 24px;
-    padding-left: 10px;
-    font-size: 14px;
-    line-height: 17px;
-    border: 1px solid #C2C2C2;
-    border-radius: 2px;
 }
 
 .select:focus {
-    border: 1px solid #000000;
-    outline: none;
 }
+
 
 .option:hover {
 }
