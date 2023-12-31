@@ -2,21 +2,42 @@
 }
 
 .inputAndButtonContainer {
+    display: flex;
+    gap: 10px;
 }
 
 .error {
+    color: red;
 }
 
 .input {
+    display: inline-block;
+    height: 36px;
+    font-size: 16px;
+    line-height: 20px;
+    border-radius: 3px;
+    padding-left: 15px;
+    margin-bottom: 10px;
 }
 
 .input:focus {
 }
 
 .errorInput {
+    border-color: red;
+    outline: none;
 }
 
 .button {
+    height: 36px;
+    padding: 5px 24px;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #FFFFFF;
+    font-weight: bold;
+    background-color: #0066CC;
+    border: none;
 }
 
 .button:focus {
@@ -26,9 +47,14 @@
 }
 
 .button:disabled {
+    opacity: 0.5;
 }
 
 .text {
+    font-size: 14px;
+    line-height: 17px;
+    opacity: 0.5;
+    margin-bottom: 10px;
 }
 
 .greeting {
