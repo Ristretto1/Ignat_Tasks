@@ -1,3 +1,4 @@
+
 .sidebar {
 }
 
@@ -17,6 +18,7 @@
 }
 
 .nav a.active {
+    color: #00cc22;
 }
 .close {
 }
