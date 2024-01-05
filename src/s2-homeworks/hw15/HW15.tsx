@@ -27,10 +27,11 @@ type ParamsType = {
     count: number
 }
 
+
 const getTechs = (params: ParamsType) => {
     return axios
         .get<{ techs: TechType[], totalCount: number }>(
-            'https://samurai.it-incubator.io/api/3.0/homework/test3',
+            'https://incubator-personal-page-back.herokuapp.com/api/3.0/homework/test3',
             {params}
         )
         .catch((e) => {
@@ -47,45 +48,45 @@ const HW15 = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const [techs, setTechs] = useState<TechType[]>([])
 
-    const sendQuery = (params: any) => {
+
+    const sendQuery = (params: ParamsType) => {
         setLoading(true)
         getTechs(params)
-            .then((res) => {
+            .then((res: any) => {
                 // делает студент
-
                 // сохранить пришедшие данные
-
-                //
+                setTotalCount(res.data.totalCount)
+                setTechs(res.data.techs)
             })
     }
 
+
     const onChangePagination = (newPage: number, newCount: number) => {
         // делает студент
-
-        // setPage(
-        // setCount(
-
-        // sendQuery(
-        // setSearchParams(
-
-        //
+        setPage(newPage)
+        setCount(newCount)
+        const queryObj = {page: newPage, count: newCount, sort}
+        sendQuery(queryObj)
+        setSearchParams({
+            page:newPage.toString(),
+            count: newCount.toString(),
+            sort
+        })
     }
+
 
     const onChangeSort = (newSort: string) => {
         // делает студент
-
-        // setSort(
-        // setPage(1) // при сортировке сбрасывать на 1 страницу
-
-        // sendQuery(
-        // setSearchParams(
-
-        //
+        setSort(newSort)
+        setPage(1) // при сортировке сбрасывать на 1 страницу
+        sendQuery({sort:newSort, page, count})
+        setSearchParams({page: "1", count:count.toString(), sort: newSort})
     }
+
 
     useEffect(() => {
         const params = Object.fromEntries(searchParams)
-        sendQuery({page: params.page, count: params.count})
+        sendQuery({page: +params.page | 1, count: +params.count | 4, sort: params.sort})
         setPage(+params.page || 1)
         setCount(+params.count || 4)
     }, [])
@@ -127,7 +128,6 @@ const HW15 = () => {
                         <SuperSort sort={sort} value={'developer'} onChange={onChangeSort}/>
                     </div>
                 </div>
-
                 {mappedTechs}
             </div>
         </div>

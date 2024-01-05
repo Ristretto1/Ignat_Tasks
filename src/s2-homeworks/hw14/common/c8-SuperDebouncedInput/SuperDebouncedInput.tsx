@@ -1,5 +1,6 @@
 import React, {DetailedHTMLProps, InputHTMLAttributes, ReactNode, useState} from 'react'
 import SuperInputText from '../../../hw04/common/c1-SuperInputText/SuperInputText'
+import {serialize} from "v8";
 
 // тип пропсов обычного инпута
 type DefaultInputPropsType = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>,
@@ -23,6 +24,7 @@ const SuperDebouncedInput: React.FC<SuperDebouncedInputPropsType> = (
         onChangeText,
         onDebouncedChange,
 
+
         ...restProps // все остальные пропсы попадут в объект restProps
     }
 ) => {
@@ -30,10 +32,13 @@ const SuperDebouncedInput: React.FC<SuperDebouncedInputPropsType> = (
 
     const onChangeTextCallback = (value: string) => {
         onChangeText?.(value)
-
         if (onDebouncedChange) {
             // делает студент
-
+            clearTimeout(timerId)
+           let timerId2 =  setTimeout(()=>{
+               onDebouncedChange(value)
+            }, 1500)
+            setTimerId(+timerId2)
             // остановить предыдущий таймер
             // запустить новый на 1500ms, в котором вызовется функция
 
