@@ -1,17 +1,27 @@
 {
   "files": {
-    "main.css": "/inc_hw/static/css/main.6b03d1dd.css",
-    "main.js": "/inc_hw/static/js/main.7e2dac1b.js",
+    "main.css": "/inc_hw/static/css/main.5941150b.css",
+    "main.js": "/inc_hw/static/js/main.ba20b9b6.js",
     "static/js/787.66cb4309.chunk.js": "/inc_hw/static/js/787.66cb4309.chunk.js",
     "static/media/avatar.png": "/inc_hw/static/media/avatar.d947cb9d0d13765666b6.png",
+    "static/media/200.svg": "/inc_hw/static/media/200.2b4de1542921864a6ecb8c3301ea4670.svg",
+    "static/media/error.svg": "/inc_hw/static/media/error.9a99652a785b87f2f448e23e5da3045d.svg",
+    "static/media/500.svg": "/inc_hw/static/media/500.65355d1617c6a93fc93572680052f0b7.svg",
+    "static/media/400.svg": "/inc_hw/static/media/400.4e46e304dcfdcae89fcfb902d8863816.svg",
+    "static/media/404.svg": "/inc_hw/static/media/404.dae7af4892f2a3abe805a174178919f2.svg",
+    "static/media/closeOutline.svg": "/inc_hw/static/media/closeOutline.91a6693133923612a0702421ab3e9923.svg",
+    "static/media/editIcon.svg": "/inc_hw/static/media/editIcon.11c8e1c42f9a4eae81897d68e091eb42.svg",
     "static/media/checked.svg": "/inc_hw/static/media/checked.0b6a1bcf5d417ff0a947.svg",
     "index.html": "/inc_hw/index.html",
-    "main.6b03d1dd.css.map": "/inc_hw/static/css/main.6b03d1dd.css.map",
-    "main.7e2dac1b.js.map": "/inc_hw/static/js/main.7e2dac1b.js.map",
+    "static/media/up.svg": "/inc_hw/static/media/up.4c6abf93e5f81056680a18aefc73d87e.svg",
+    "static/media/down.svg": "/inc_hw/static/media/down.1edfab86f389055c97b80ec14e52f85c.svg",
+    "static/media/burger.svg": "/inc_hw/static/media/burger.e4e6b98e4ee0b2dfcd76d02a9eed2e34.svg",
+    "main.5941150b.css.map": "/inc_hw/static/css/main.5941150b.css.map",
+    "main.ba20b9b6.js.map": "/inc_hw/static/js/main.ba20b9b6.js.map",
     "787.66cb4309.chunk.js.map": "/inc_hw/static/js/787.66cb4309.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6b03d1dd.css",
-    "static/js/main.7e2dac1b.js"
+    "static/css/main.5941150b.css",
+    "static/js/main.ba20b9b6.js"
   ]
 }
