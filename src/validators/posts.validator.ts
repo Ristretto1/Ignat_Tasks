@@ -37,8 +37,8 @@ const blogIdValidation = body('blogId')
   .trim()
   .isLength({ min: 1 })
   .withMessage('content length must be min: 1')
-  .custom((id) => {
-    const blog = BlogRepository.getItemById(id);
+  .custom(async (id) => {
+    const blog = await BlogRepository.getItemById(id);
     if (!blog) throw new Error('this blogId is not found');
     else return true;
   });
