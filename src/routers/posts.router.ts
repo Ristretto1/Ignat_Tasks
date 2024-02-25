@@ -26,7 +26,7 @@ postsRouter.delete('/:id', authMiddleware, async (req: Request<{ id: string }>, 
   const { id } = req.params;
   if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   const isDeleted = await PostsRepository.removeItemById(id);
-  if (!isDeleted) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+  if (!isDeleted) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 });
 postsRouter.post(
