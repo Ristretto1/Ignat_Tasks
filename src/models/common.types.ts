@@ -9,7 +9,6 @@ export enum HTTP_STATUSES {
 }
 
 export enum AppRouterPath {
-  videos = '/videos',
   testing = '/testing',
   blogs = '/blogs',
   posts = '/posts',

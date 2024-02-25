@@ -3,26 +3,26 @@ import { PostsRepository } from '../repositories/posts.repository';
 import { IPostOutput } from '../models/posts/output.types';
 import { HTTP_STATUSES } from '../models/common.types';
 import { authMiddleware } from '../middlewares/auth/auth.middleware';
-import { ICreateBlog } from '../models/blogs/input.types';
 import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
 import { BlogRepository } from '../repositories/blogs.repository';
 import { postsInputModelValidation } from '../validators/posts.validator';
+import { IPostDB } from '../models/db/db.types';
 
 export const postsRouter = Router();
 
-postsRouter.get('/', (req: Request, res: Response<IPostOutput[]>) => {
-  const posts = PostsRepository.getAll();
+postsRouter.get('/', async (req: Request, res: Response<IPostOutput[]>) => {
+  const posts = await PostsRepository.getAll();
   return res.send(posts);
 });
-postsRouter.get('/:id', (req: Request<{ id: string }>, res: Response<IPostOutput>) => {
+postsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IPostOutput>) => {
   const { id } = req.params;
-  const post = PostsRepository.getItemById(id);
-  if (!post) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-  return res.send(post);
+  const post = await PostsRepository.getItemById(id);
+  if (post) return res.send(post);
+  else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
-postsRouter.delete('/:id', authMiddleware, (req: Request<{ id: string }>, res: Response) => {
+postsRouter.delete('/:id', authMiddleware, async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
-  const isDeleted = PostsRepository.removeItemById(id);
+  const isDeleted = await PostsRepository.removeItemById(id);
   if (!isDeleted) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 });
@@ -30,42 +30,39 @@ postsRouter.post(
   '/',
   authMiddleware,
   postsInputModelValidation(),
-  (req: Request<unknown, unknown, ICreatePost>, res: Response<IPostOutput>) => {
+  async (req: Request<unknown, unknown, ICreatePost>, res: Response<IPostOutput>) => {
     const { blogId, content, shortDescription, title } = req.body;
-    const currentBlog = BlogRepository.getItemById(blogId);
+    const currentBlog = await BlogRepository.getItemById(blogId);
     if (!currentBlog) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
 
-    const postModel: IPostOutput = {
+    const postModel: IPostDB = {
       blogId,
-      blogName: currentBlog.name,
       content,
-      id: Date.now().toString(),
       shortDescription,
       title,
+      blogName: currentBlog.name,
+      createdAt: new Date().toISOString(),
     };
-    const post = PostsRepository.createItem(postModel);
-    return res.status(HTTP_STATUSES.CREATED_201).send(post);
+    const post = await PostsRepository.createItem(postModel);
+    if (post) return res.status(HTTP_STATUSES.CREATED_201).send(post);
+    else return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
   }
 );
 postsRouter.put(
   '/:id',
   authMiddleware,
   postsInputModelValidation(),
-  (req: Request<{ id: string }, unknown, IUpdatePost>, res: Response<IPostOutput>) => {
+  async (req: Request<{ id: string }, unknown, IUpdatePost>, res: Response<IPostOutput>) => {
     const { blogId, content, shortDescription, title } = req.body;
     const { id } = req.params;
-    const currentBlog = BlogRepository.getItemById(blogId);
-    if (!currentBlog) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
 
-    const postModel: IPostOutput = {
+    const postModel: IUpdatePost = {
       blogId,
-      blogName: currentBlog.name,
       content,
-      id: Date.now().toString(),
       shortDescription,
       title,
     };
-    const isUpdate = PostsRepository.updateItem(id, postModel);
+    const isUpdate = await PostsRepository.updateItem(id, postModel);
     if (!isUpdate) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   }

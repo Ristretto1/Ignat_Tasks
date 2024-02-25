@@ -1,35 +1,42 @@
-import { db } from '../db/db';
+import { ObjectId } from 'bson';
+import { postCollection } from '../db/db';
+import { IPostDB } from '../models/db/db.types';
 import { IPostOutput } from '../models/posts/output.types';
-import { IPostDB } from '../models/posts/posts.types';
+import { postMapper } from '../models/posts/postMapper/postMapper';
+import { IUpdatePost } from '../models/posts/input.types';
 
 export class PostsRepository {
-  static getAll(): IPostDB[] {
-    return db.posts;
+  static async getAll(): Promise<IPostOutput[]> {
+    const posts = await postCollection.find({}).toArray();
+    return posts.map(postMapper);
   }
-  static getItemById(id: string): IPostDB | undefined {
-    const currentItem = db.posts.find((el) => el.id === id);
-    return currentItem;
+  static async getItemById(id: string): Promise<IPostOutput | null> {
+    const currentItem = await postCollection.findOne({ _id: new ObjectId(id) });
+    if (currentItem) return postMapper(currentItem);
+    return null;
   }
-  static removeItemById(id: string): boolean {
-    const currentItemIndex = db.posts.findIndex((el) => el.id === id);
-    if (currentItemIndex === -1) return false;
-    db.posts.splice(currentItemIndex, 1);
-    return true;
+  static async removeItemById(id: string): Promise<boolean> {
+    const res = postCollection.deleteOne({ _id: new ObjectId(id) });
+    return !!(await res).deletedCount;
   }
-  static createItem(data: IPostOutput): IPostOutput {
-    db.posts.push(data);
-    return data;
+  static async createItem(data: IPostDB): Promise<IPostOutput | null> {
+    const res = await postCollection.insertOne(data);
+    const currentIndex = res.insertedId.toString();
+    const item = await this.getItemById(currentIndex);
+    return item;
   }
-  static updateItem(id: string, data: IPostOutput): boolean {
-    const currentItemIndex = db.posts.findIndex((el) => el.id === id);
-    if (currentItemIndex === -1) return false;
-    db.posts[currentItemIndex] = {
-      ...db.posts[currentItemIndex],
-      blogId: data.blogId,
-      content: data.content,
-      shortDescription: data.shortDescription,
-      title: data.title,
-    };
-    return true;
+  static async updateItem(id: string, data: IUpdatePost): Promise<boolean> {
+    const res = await postCollection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          content: data.content,
+          blogId: data.blogId,
+          title: data.title,
+          shortDescription: data.shortDescription,
+        },
+      }
+    );
+    return !!res.matchedCount;
   }
 }

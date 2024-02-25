@@ -4,26 +4,26 @@ import { HTTP_STATUSES } from '../models/common.types';
 import { authMiddleware } from '../middlewares/auth/auth.middleware';
 import { ICreateBlog, IUpdateBlog } from '../models/blogs/input.types';
 import { IBlogOutput } from '../models/blogs/output.types';
-import { IBlogDB } from '../models/blogs/blogs.types';
 import { blogsInputModelValidation } from '../validators/blogs.validator';
+import { IBlogDB } from '../models/db/db.types';
 
 export const blogsRouter = Router();
 
-blogsRouter.get('/', (req: Request, res: Response<IBlogOutput[]>) => {
-  const blogs: IBlogOutput[] = BlogRepository.getAll();
+blogsRouter.get('/', async (req: Request, res: Response<IBlogOutput[]>) => {
+  const blogs: IBlogOutput[] = await BlogRepository.getAll();
   return res.send(blogs);
 });
 
-blogsRouter.get('/:id', (req: Request<{ id: string }>, res: Response<IBlogOutput>) => {
+blogsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IBlogOutput>) => {
   const { id } = req.params;
-  const blog = BlogRepository.getItemById(id);
+  const blog = await BlogRepository.getItemById(id);
   if (blog) return res.send(blog);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
 
-blogsRouter.delete('/:id', authMiddleware, (req: Request<{ id: string }>, res: Response) => {
+blogsRouter.delete('/:id', authMiddleware, async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
-  const isDeleted = BlogRepository.removeItemById(id);
+  const isDeleted = await BlogRepository.removeItemById(id);
   if (isDeleted) return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
@@ -32,18 +32,20 @@ blogsRouter.post(
   '/',
   authMiddleware,
   blogsInputModelValidation(),
-  (req: Request<unknown, unknown, ICreateBlog>, res: Response<IBlogOutput>) => {
+  async (req: Request<unknown, unknown, ICreateBlog>, res: Response<IBlogOutput>) => {
     const { name, description, websiteUrl } = req.body;
 
-    const newBlog: IBlogDB = {
-      id: Date.now().toString(),
+    const dataForNewItem: IBlogDB = {
       description,
       name,
       websiteUrl,
+      isMembership: false,
+      createdAt: new Date().toISOString(),
     };
 
-    const blog = BlogRepository.createItem(newBlog);
-    return res.status(HTTP_STATUSES.CREATED_201).send(blog);
+    const blog = await BlogRepository.createItem(dataForNewItem);
+    if (blog) return res.status(HTTP_STATUSES.CREATED_201).send(blog);
+    else return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
   }
 );
 
@@ -51,20 +53,22 @@ blogsRouter.put(
   '/:id',
   authMiddleware,
   blogsInputModelValidation(),
-  (req: Request<{ id: string }, unknown, IUpdateBlog>, res: Response) => {
+  async (req: Request<{ id: string }, unknown, IUpdateBlog>, res: Response) => {
     const { description, name, websiteUrl } = req.body;
     const { id } = req.params;
-    const blog = BlogRepository.getItemById(id);
+
+    const blog = await BlogRepository.getItemById(id);
     if (!blog) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 
-    const updateData: IBlogDB = {
-      id: blog.id,
+    const dataForNewItem: IBlogDB = {
       description,
       name,
       websiteUrl,
+      isMembership: blog.isMembership,
+      createdAt: blog.createdAt,
     };
 
-    const isUpdate = BlogRepository.updateItem(id, updateData);
+    const isUpdate = await BlogRepository.updateItem(id, dataForNewItem);
     if (isUpdate) return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
     else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   }
