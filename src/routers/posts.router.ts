@@ -7,6 +7,7 @@ import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
 import { BlogRepository } from '../repositories/blogs.repository';
 import { postsInputModelValidation } from '../validators/posts.validator';
 import { IPostDB } from '../models/db/db.types';
+import { ObjectId } from 'mongodb';
 
 export const postsRouter = Router();
 
@@ -16,12 +17,14 @@ postsRouter.get('/', async (req: Request, res: Response<IPostOutput[]>) => {
 });
 postsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IPostOutput>) => {
   const { id } = req.params;
+  if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   const post = await PostsRepository.getItemById(id);
   if (post) return res.send(post);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
 postsRouter.delete('/:id', authMiddleware, async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
+  if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   const isDeleted = await PostsRepository.removeItemById(id);
   if (!isDeleted) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
@@ -55,6 +58,7 @@ postsRouter.put(
   async (req: Request<{ id: string }, unknown, IUpdatePost>, res: Response<IPostOutput>) => {
     const { blogId, content, shortDescription, title } = req.body;
     const { id } = req.params;
+    if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 
     const postModel: IUpdatePost = {
       blogId,
