@@ -6,6 +6,7 @@ import { ICreateBlog, IUpdateBlog } from '../models/blogs/input.types';
 import { IBlogOutput } from '../models/blogs/output.types';
 import { blogsInputModelValidation } from '../validators/blogs.validator';
 import { IBlogDB } from '../models/db/db.types';
+import { ObjectId } from 'mongodb';
 
 export const blogsRouter = Router();
 
@@ -16,6 +17,7 @@ blogsRouter.get('/', async (req: Request, res: Response<IBlogOutput[]>) => {
 
 blogsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IBlogOutput>) => {
   const { id } = req.params;
+  if (!ObjectId.isValid(id)) return null;
   const blog = await BlogRepository.getItemById(id);
   if (blog) return res.send(blog);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);

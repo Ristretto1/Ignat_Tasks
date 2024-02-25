@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { IBlogDB, IPostDB } from '../models/db/db.types';
 dotenv.config();
 
-const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
+const uri = process.env.LOCAL_URI || process.env.MONGO_URI || 'mongodb://localhost:27017';
 
 const client = new MongoClient(uri);
 const database = client.db();
