@@ -1,9 +1,15 @@
-import { IBlogDB } from '../blogs/blogs.types';
-import { IPostDB } from '../posts/posts.types';
-import { IVideo } from '../videos/videos.types';
-
-export interface IDB {
-  videos: IVideo[];
-  blogs: IBlogDB[];
-  posts: IPostDB[];
+export interface IBlogDB {
+  name: string;
+  description: string;
+  websiteUrl: string;
+  createdAt: string;
+  isMembership: boolean;
+}
+export interface IPostDB {
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+  createdAt: string;
 }
