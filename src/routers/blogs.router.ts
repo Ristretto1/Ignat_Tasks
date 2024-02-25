@@ -17,7 +17,7 @@ blogsRouter.get('/', async (req: Request, res: Response<IBlogOutput[]>) => {
 
 blogsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IBlogOutput>) => {
   const { id } = req.params;
-  if (!ObjectId.isValid(id)) return null;
+  if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);;
   const blog = await BlogRepository.getItemById(id);
   if (blog) return res.send(blog);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
@@ -25,6 +25,7 @@ blogsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IBlog
 
 blogsRouter.delete('/:id', authMiddleware, async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
+  if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);;
   const isDeleted = await BlogRepository.removeItemById(id);
   if (isDeleted) return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
@@ -58,7 +59,7 @@ blogsRouter.put(
   async (req: Request<{ id: string }, unknown, IUpdateBlog>, res: Response) => {
     const { description, name, websiteUrl } = req.body;
     const { id } = req.params;
-
+    if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);;
     const blog = await BlogRepository.getItemById(id);
     if (!blog) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 
