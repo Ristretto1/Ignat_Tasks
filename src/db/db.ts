@@ -6,7 +6,7 @@ dotenv.config();
 const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 
 const client = new MongoClient(uri);
-const database = client.db('incubator');
+const database = client.db();
 export const blogCollection = database.collection<IBlogDB>('blogs');
 export const postCollection = database.collection<IPostDB>('posts');
 
