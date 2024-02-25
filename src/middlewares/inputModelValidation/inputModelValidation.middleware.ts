@@ -15,6 +15,7 @@ export const inputModelValidation = (req: Request, res: Response, next: NextFunc
     const errors: IError = {
       errorsMessages,
     };
+
     return res.status(HTTP_STATUSES.BAD_REQUEST_400).send(errors);
   } else return next();
 };
