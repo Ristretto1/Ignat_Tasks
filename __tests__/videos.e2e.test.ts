@@ -1,8 +1,8 @@
 import request from 'supertest';
 import { app } from '../src/settings';
 import dotenv from 'dotenv';
-import { AppRouterPath, HTTPCodeStatuses } from '../src/common.types';
-import { IVideo, IVideoInputUpdate } from '../src/types/videos.types';
+import { AppRouterPath, HTTP_STATUSES } from '../src/models/common.types';
+import { IVideo, IVideoInputUpdate } from '../src/models/videos/videos.types';
 dotenv.config();
 
 const route = AppRouterPath.videos;
@@ -11,28 +11,28 @@ describe(route, () => {
   beforeAll(async () => {
     await request(app)
       .delete(`${AppRouterPath.testing}/all-data`)
-      .expect(HTTPCodeStatuses.NO_CONTENT);
+      .expect(HTTP_STATUSES.NO_CONTENT_204);
   });
 
   afterAll(async () => {
     await request(app)
       .delete(`${AppRouterPath.testing}/all-data`)
-      .expect(HTTPCodeStatuses.NO_CONTENT);
+      .expect(HTTP_STATUSES.NO_CONTENT_204);
   });
 
   it('+ GET all items = []', async () => {
-    await request(app).get(route).expect(HTTPCodeStatuses.OK, []);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
   });
 
   it('- PUT item with incorrect id', async () => {
-    await request(app).put(`${route}/-100`).expect(HTTPCodeStatuses.NOT_FOUND);
+    await request(app).put(`${route}/-100`).expect(HTTP_STATUSES.NOT_FOUND_404);
   });
   it('- DELETE item with incorrect id', async () => {
-    await request(app).delete(`${route}/-100`).expect(HTTPCodeStatuses.NOT_FOUND);
-    await request(app).get(route).expect(HTTPCodeStatuses.OK, []);
+    await request(app).delete(`${route}/-100`).expect(HTTP_STATUSES.NOT_FOUND_404);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
   });
   it('- GET item with incorrect id', async () => {
-    await request(app).get(`${route}/-100`).expect(HTTPCodeStatuses.NOT_FOUND);
+    await request(app).get(`${route}/-100`).expect(HTTP_STATUSES.NOT_FOUND_404);
   });
 
   let newItem1: IVideo;
@@ -41,7 +41,7 @@ describe(route, () => {
     const res = await request(app)
       .post(route)
       .send({ title: 'title 1', author: 'author 1', availableResolutions: ['P144'] })
-      .expect(HTTPCodeStatuses.CREATED);
+      .expect(HTTP_STATUSES.CREATED_201);
 
     newItem1 = res.body;
 
@@ -55,13 +55,13 @@ describe(route, () => {
       publicationDate: expect.any(String),
       availableResolutions: ['P144'],
     });
-    await request(app).get(route).expect(HTTPCodeStatuses.OK, [newItem1]);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem1]);
   });
   it('+ POST second item with correct input data', async () => {
     const res = await request(app)
       .post(route)
       .send({ title: 'title 2', author: 'author 2', availableResolutions: ['P720'] })
-      .expect(HTTPCodeStatuses.CREATED);
+      .expect(HTTP_STATUSES.CREATED_201);
 
     newItem2 = res.body;
 
@@ -76,11 +76,11 @@ describe(route, () => {
       availableResolutions: ['P720'],
     });
 
-    await request(app).get(route).expect(HTTPCodeStatuses.OK, [newItem1, newItem2]);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem1, newItem2]);
   });
 
   it('+ GET fisrt item by id', async () => {
-    await request(app).get(`${route}/${newItem1.id}`).expect(HTTPCodeStatuses.OK, newItem1);
+    await request(app).get(`${route}/${newItem1.id}`).expect(HTTP_STATUSES.OK_200, newItem1);
   });
 
   it('+ PUT fisrt item by id', async () => {
@@ -96,7 +96,7 @@ describe(route, () => {
     await request(app)
       .put(`${route}/${newItem1.id}`)
       .send(updateData)
-      .expect(HTTPCodeStatuses.NO_CONTENT);
+      .expect(HTTP_STATUSES.NO_CONTENT_204);
 
     const res = await request(app).get(`${route}/${newItem1.id}`);
     const updatedItem = res.body;
@@ -107,11 +107,11 @@ describe(route, () => {
   });
 
   it('+ DELETE fisrt item', async () => {
-    await request(app).delete(`${route}/${newItem1.id}`).expect(HTTPCodeStatuses.NO_CONTENT);
-    await request(app).get(route).expect(HTTPCodeStatuses.OK, [newItem2]);
+    await request(app).delete(`${route}/${newItem1.id}`).expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem2]);
   });
   it('+ DELETE second item', async () => {
-    await request(app).delete(`${route}/${newItem2.id}`).expect(HTTPCodeStatuses.NO_CONTENT);
-    await request(app).get(route).expect(HTTPCodeStatuses.OK, []);
+    await request(app).delete(`${route}/${newItem2.id}`).expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
   });
 });
