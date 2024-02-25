@@ -67,7 +67,7 @@ postsRouter.put(
       title,
     };
     const isUpdate = await PostsRepository.updateItem(id, postModel);
-    if (!isUpdate) res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+    if (!isUpdate) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   }
 );
