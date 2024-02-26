@@ -4,11 +4,30 @@ import { IPostDB } from '../models/db/db.types';
 import { IPostOutput } from '../models/posts/output.types';
 import { postMapper } from '../models/posts/postMapper/postMapper';
 import { IUpdatePost } from '../models/posts/input.types';
+import { IOutputModel } from '../models/common.types';
+import { IQueryPostData } from '../models/posts/query.types';
 
-export class PostsRepository {
-  static async getAll(): Promise<IPostOutput[]> {
-    const posts = await postCollection.find({}).toArray();
-    return posts.map(postMapper);
+export class PostRepository {
+  static async getAll(sortData: IQueryPostData): Promise<IOutputModel<IPostOutput>> {
+    const { pageNumber, pageSize, sortBy, sortDirection } = sortData;
+    const filter = {};
+
+    const posts = await postCollection
+      .find(filter)
+      .sort(sortBy, sortDirection)
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize)
+      .toArray();
+
+    const totalCount = await postCollection.countDocuments(filter);
+    const pagesCount = Math.ceil(totalCount / pageSize);
+    return {
+      items: posts.map(postMapper),
+      page: pageNumber,
+      pagesCount,
+      pageSize,
+      totalCount,
+    };
   }
   static async getItemById(id: string): Promise<IPostOutput | null> {
     const currentItem = await postCollection.findOne({ _id: new ObjectId(id) });
@@ -19,11 +38,9 @@ export class PostsRepository {
     const res = postCollection.deleteOne({ _id: new ObjectId(id) });
     return !!(await res).deletedCount;
   }
-  static async createItem(data: IPostDB): Promise<IPostOutput | null> {
+  static async createItem(data: IPostDB): Promise<string> {
     const res = await postCollection.insertOne(data);
-    const currentIndex = res.insertedId.toString();
-    const item = await this.getItemById(currentIndex);
-    return item;
+    return res.insertedId.toString();
   }
   static async updateItem(id: string, data: IUpdatePost): Promise<boolean> {
     const res = await postCollection.updateOne(

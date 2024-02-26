@@ -22,3 +22,11 @@ export interface IErrorMessage {
 export interface IError {
   errorsMessages: IErrorMessage[];
 }
+
+export interface IOutputModel<I> {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: I[];
+}
