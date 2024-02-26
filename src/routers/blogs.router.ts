@@ -3,7 +3,10 @@ import { HTTP_STATUSES, IOutputModel } from '../models/common.types';
 import { authMiddleware } from '../middlewares/auth/auth.middleware';
 import { ICreateBlog, ICreatePostByBlogId, IUpdateBlog } from '../models/blogs/input.types';
 import { IBlogOutput } from '../models/blogs/output.types';
-import { blogsInputModelValidation } from '../validators/blogs.validator';
+import {
+  blogsInputModelValidation,
+  postInBlogInputModelValidation,
+} from '../validators/blogs.validator';
 import { BlogService } from '../services/blogs.service';
 import { IQueryBlogData } from '../models/blogs/query.types';
 import { IQueryPostData } from '../models/posts/query.types';
@@ -59,6 +62,8 @@ blogsRouter.get(
 
 blogsRouter.post(
   '/:id/posts',
+  authMiddleware,
+  postInBlogInputModelValidation(),
   async (
     req: Request<{ id: string }, unknown, ICreatePostByBlogId>,
     res: Response<IPostOutput>
@@ -67,7 +72,7 @@ blogsRouter.post(
     const { content, shortDescription, title } = req.body;
 
     const blogs = await BlogService.createPostsByBlogId(id, { content, shortDescription, title });
-    if (blogs) return res.send(blogs);
+    if (blogs) return res.status(HTTP_STATUSES.CREATED_201).send(blogs);
     else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   }
 );

@@ -36,3 +36,37 @@ export const blogsInputModelValidation = () => [
   websiteUrlValidator,
   inputModelValidation,
 ];
+
+const titleValidation = body('title')
+  .notEmpty()
+  .withMessage('title is required')
+  .isString()
+  .withMessage('title must be string')
+  .trim()
+  .isLength({ min: 1, max: 30 })
+  .withMessage('title length must be min: 1, max: 30');
+
+const shortDescriptionValidation = body('shortDescription')
+  .notEmpty()
+  .withMessage('shortDescription is required')
+  .isString()
+  .withMessage('shortDescription must be string')
+  .trim()
+  .isLength({ min: 1, max: 100 })
+  .withMessage('shortDescription length must be min: 1, max: 100');
+
+const contentValidation = body('content')
+  .notEmpty()
+  .withMessage('content is required')
+  .isString()
+  .withMessage('content must be string')
+  .trim()
+  .isLength({ min: 1, max: 1000 })
+  .withMessage('content length must be min: 1, max: 1000');
+
+export const postInBlogInputModelValidation = () => [
+  titleValidation,
+  shortDescriptionValidation,
+  contentValidation,
+  inputModelValidation,
+];
