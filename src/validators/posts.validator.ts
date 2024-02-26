@@ -43,10 +43,10 @@ const blogIdValidation = body('blogId')
     else return true;
   });
 
-export const postsInputModelValidation = () => [
-  titleValidation,
-  shortDescriptionValidation,
-  contentValidation,
-  blogIdValidation,
-  inputModelValidation,
-];
+  export const postsInputModelValidation = () => [
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    blogIdValidation,
+    inputModelValidation,
+  ];

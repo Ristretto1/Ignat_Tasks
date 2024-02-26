@@ -39,24 +39,23 @@ export class BlogRepository {
     return blogMapper(currentItem);
   }
   static async getPostsByBlogId(
-    id: string,
     data: IQueryPostData
   ): Promise<IOutputModel<IPostOutput> | null> {
     const { pageNumber, pageSize, sortBy, sortDirection } = data;
     let filter = {};
 
-    const blogs = await postCollection
+    const posts = await postCollection
       .find(filter)
       .sort(sortBy, sortDirection)
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .toArray();
 
-    const totalCount = await blogCollection.countDocuments(filter);
+    const totalCount = await postCollection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
-      items: blogs.map(postMapper),
+      items: posts.map(postMapper),
       page: pageNumber,
       pagesCount,
       pageSize,
