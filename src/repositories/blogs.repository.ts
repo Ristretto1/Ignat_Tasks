@@ -41,11 +41,14 @@ export class BlogRepository {
     if (!currentItem) return null;
     return blogMapper(currentItem);
   }
-  static async getPostsByBlogId(data: IQueryPostData): Promise<IOutputModel<IPostOutput> | null> {
+  static async getPostsByBlogId(
+    id: string,
+    data: IQueryPostData
+  ): Promise<IOutputModel<IPostOutput> | null> {
     let { pageNumber, pageSize, sortBy, sortDirection } = data;
     pageNumber = Number(pageNumber);
     pageSize = Number(pageSize);
-    let filter = {};
+    let filter = { blogId: id };
 
     const posts = await postCollection
       .find(filter)
