@@ -18,11 +18,10 @@ export class BlogRepository {
     const res = await blogCollection.deleteOne({ _id: new ObjectId(id) });
     return !!res.deletedCount;
   }
-  static async createItem(data: IBlogDB): Promise<IBlogOutput | null> {
+  static async createItem(data: IBlogDB): Promise<string> {
     const res = await blogCollection.insertOne(data);
     const currentIndex = res.insertedId.toString();
-    const item = await this.getItemById(currentIndex);
-    return item;
+    return currentIndex;
   }
   static async updateItem(id: string, data: IBlogDB): Promise<boolean> {
     const res = await blogCollection.updateOne(

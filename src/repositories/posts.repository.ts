@@ -5,7 +5,7 @@ import { IPostOutput } from '../models/posts/output.types';
 import { postMapper } from '../models/posts/postMapper/postMapper';
 import { IUpdatePost } from '../models/posts/input.types';
 
-export class PostsRepository {
+export class PostRepository {
   static async getAll(): Promise<IPostOutput[]> {
     const posts = await postCollection.find({}).toArray();
     return posts.map(postMapper);
@@ -19,11 +19,9 @@ export class PostsRepository {
     const res = postCollection.deleteOne({ _id: new ObjectId(id) });
     return !!(await res).deletedCount;
   }
-  static async createItem(data: IPostDB): Promise<IPostOutput | null> {
+  static async createItem(data: IPostDB): Promise<string> {
     const res = await postCollection.insertOne(data);
-    const currentIndex = res.insertedId.toString();
-    const item = await this.getItemById(currentIndex);
-    return item;
+    return res.insertedId.toString();
   }
   static async updateItem(id: string, data: IUpdatePost): Promise<boolean> {
     const res = await postCollection.updateOne(
