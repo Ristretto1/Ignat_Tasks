@@ -9,3 +9,9 @@ export interface IUpdateBlog {
   description: string;
   websiteUrl: string;
 }
+
+export interface ICreatePostByBlogId {
+  title: string;
+  shortDescription: string;
+  content: string;
+}

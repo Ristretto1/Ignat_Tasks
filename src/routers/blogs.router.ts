@@ -1,11 +1,14 @@
 import { Router, Request, Response } from 'express';
 import { HTTP_STATUSES, IOutputModel } from '../models/common.types';
 import { authMiddleware } from '../middlewares/auth/auth.middleware';
-import { ICreateBlog, IUpdateBlog } from '../models/blogs/input.types';
+import { ICreateBlog, ICreatePostByBlogId, IUpdateBlog } from '../models/blogs/input.types';
 import { IBlogOutput } from '../models/blogs/output.types';
 import { blogsInputModelValidation } from '../validators/blogs.validator';
 import { BlogService } from '../services/blogs.service';
 import { IQueryBlogData } from '../models/blogs/query.types';
+import { IQueryPostData } from '../models/posts/query.types';
+import { IPostOutput } from '../models/posts/output.types';
+import { ICreatePost } from '../models/posts/input.types';
 
 export const blogsRouter = Router();
 
@@ -33,6 +36,41 @@ blogsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IBlog
   if (blog) return res.send(blog);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
+
+blogsRouter.get(
+  '/:id/posts',
+  async (
+    req: Request<{ id: string }, unknown, unknown, IQueryPostData>,
+    res: Response<IOutputModel<IPostOutput>>
+  ) => {
+    const { id } = req.params;
+    const { pageNumber, pageSize, sortBy, sortDirection } = req.query;
+
+    const blogs = await BlogService.getPostsByBlogId(id, {
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortDirection,
+    });
+    if (blogs) return res.send(blogs);
+    else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+  }
+);
+
+blogsRouter.post(
+  '/:id/posts',
+  async (
+    req: Request<{ id: string }, unknown, ICreatePostByBlogId>,
+    res: Response<IPostOutput>
+  ) => {
+    const { id } = req.params;
+    const { content, shortDescription, title } = req.body;
+
+    const blogs = await BlogService.createPostsByBlogId(id, { content, shortDescription, title });
+    if (blogs) return res.send(blogs);
+    else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+  }
+);
 
 blogsRouter.delete('/:id', authMiddleware, async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
