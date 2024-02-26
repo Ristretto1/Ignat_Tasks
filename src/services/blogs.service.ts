@@ -23,15 +23,14 @@ export class BlogService {
   }
   static async getItemById(id: string): Promise<IBlogOutput | null> {
     if (!ObjectId.isValid(id)) return null;
-    const blog = await BlogRepository.getItemById(id);
-    return blog;
+    return await BlogRepository.getItemById(id);
   }
   static async getPostsByBlogId(
     id: string,
     data: IQueryPostData
   ): Promise<IOutputModel<IPostOutput> | null> {
     if (!ObjectId.isValid(id)) return null;
-    const currentBlog = this.getItemById(id);
+    const currentBlog = await this.getItemById(id);
     if (!currentBlog) return null;
 
     const sortData: IQueryPostData = {
