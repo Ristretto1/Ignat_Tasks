@@ -7,7 +7,6 @@ import { IQueryBlogData } from '../models/blogs/query.types';
 import { IOutputModel } from '../models/common.types';
 import { IQueryPostData } from '../models/posts/query.types';
 import { IPostOutput } from '../models/posts/output.types';
-import { PostRepository } from '../repositories/posts.repository';
 import { PostService } from './posts.service';
 
 export class BlogService {
@@ -32,6 +31,8 @@ export class BlogService {
     data: IQueryPostData
   ): Promise<IOutputModel<IPostOutput> | null> {
     if (!ObjectId.isValid(id)) return null;
+    const currentBlog = this.getItemById(id);
+    if (!currentBlog) return null;
 
     const sortData: IQueryPostData = {
       pageNumber: data.pageNumber ?? 1,
@@ -40,8 +41,7 @@ export class BlogService {
       sortDirection: data.sortDirection ?? 'desc',
     };
 
-    const posts = await BlogRepository.getPostsByBlogId(sortData);
-    return posts;
+    return await BlogRepository.getPostsByBlogId(sortData);
   }
   static async createPostsByBlogId(
     id: string,
