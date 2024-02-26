@@ -9,7 +9,9 @@ import { IQueryPostData } from '../models/posts/query.types';
 
 export class PostRepository {
   static async getAll(sortData: IQueryPostData): Promise<IOutputModel<IPostOutput>> {
-    const { pageNumber, pageSize, sortBy, sortDirection } = sortData;
+    let { pageNumber, pageSize, sortBy, sortDirection } = sortData;
+    pageNumber = Number(pageNumber);
+    pageSize = Number(pageSize);
     const filter = {};
 
     const posts = await postCollection

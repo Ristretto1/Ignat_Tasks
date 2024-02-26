@@ -11,7 +11,10 @@ import { postMapper } from '../models/posts/postMapper/postMapper';
 
 export class BlogRepository {
   static async getAll(sortData: IQueryBlogData): Promise<IOutputModel<IBlogOutput>> {
-    const { pageNumber, pageSize, searchNameTerm, sortBy, sortDirection } = sortData;
+    let { pageNumber, pageSize, searchNameTerm, sortBy, sortDirection } = sortData;
+    pageNumber = Number(pageNumber);
+    pageSize = Number(pageSize);
+
     let filter = {};
     if (searchNameTerm) filter = { name: { $regex: searchNameTerm, $options: 'i' } };
 
@@ -38,10 +41,10 @@ export class BlogRepository {
     if (!currentItem) return null;
     return blogMapper(currentItem);
   }
-  static async getPostsByBlogId(
-    data: IQueryPostData
-  ): Promise<IOutputModel<IPostOutput> | null> {
-    const { pageNumber, pageSize, sortBy, sortDirection } = data;
+  static async getPostsByBlogId(data: IQueryPostData): Promise<IOutputModel<IPostOutput> | null> {
+    let { pageNumber, pageSize, sortBy, sortDirection } = data;
+    pageNumber = Number(pageNumber);
+    pageSize = Number(pageSize);
     let filter = {};
 
     const posts = await postCollection
