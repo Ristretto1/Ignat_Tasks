@@ -40,7 +40,7 @@ export class BlogService {
       sortDirection: data.sortDirection ?? 'desc',
     };
 
-    return await BlogRepository.getPostsByBlogId(sortData);
+    return await BlogRepository.getPostsByBlogId(id, sortData);
   }
   static async createPostsByBlogId(
     id: string,
