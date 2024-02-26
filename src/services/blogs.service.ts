@@ -20,8 +20,7 @@ export class BlogService {
       sortDirection: data.sortDirection ?? 'desc',
     };
 
-    const blogs = await BlogRepository.getAll(sortData);
-    return blogs;
+    return await BlogRepository.getAll(sortData);
   }
   static async getItemById(id: string): Promise<IBlogOutput | null> {
     if (!ObjectId.isValid(id)) return null;
