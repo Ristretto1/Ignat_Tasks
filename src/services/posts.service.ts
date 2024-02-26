@@ -6,10 +6,18 @@ import { postMapper } from '../models/posts/postMapper/postMapper';
 import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
 import { PostRepository } from '../repositories/posts.repository';
 import { BlogRepository } from '../repositories/blogs.repository';
+import { IOutputModel } from '../models/common.types';
+import { IQueryPostData } from '../models/posts/query.types';
 
 export class PostService {
-  static async getAll(): Promise<IPostOutput[]> {
-    const posts = await PostRepository.getAll();
+  static async getAll(data: IQueryPostData): Promise<IOutputModel<IPostOutput>> {
+    const sortData: IQueryPostData = {
+      pageNumber: data.pageNumber ?? 1,
+      pageSize: data.pageSize ?? 10,
+      sortBy: data.sortBy ?? 'createdAt',
+      sortDirection: data.sortDirection ?? 'desc',
+    };
+    const posts = await PostRepository.getAll(sortData);
     return posts;
   }
   static async getItemById(id: string): Promise<IPostOutput | null> {

@@ -3,13 +3,24 @@ import { IBlogOutput } from '../models/blogs/output.types';
 import { IBlogDB } from '../models/db/db.types';
 import { BlogRepository } from '../repositories/blogs.repository';
 import { ICreateBlog, IUpdateBlog } from '../models/blogs/input.types';
+import { IQueryBlogData } from '../models/blogs/query.types';
+import { IOutputModel } from '../models/common.types';
 
 export class BlogService {
-  static async getAll(): Promise<IBlogOutput[]> {
-    const blogs = await BlogRepository.getAll();
+  static async getAll(data: IQueryBlogData): Promise<IOutputModel<IBlogOutput>> {
+    const sortData: IQueryBlogData = {
+      pageNumber: data.pageNumber ?? 1,
+      pageSize: data.pageSize ?? 10,
+      searchNameTerm: data.searchNameTerm ?? null,
+      sortBy: data.sortBy ?? 'createdAt',
+      sortDirection: data.sortDirection ?? 'desc',
+    };
+
+    const blogs = await BlogRepository.getAll(sortData);
     return blogs;
   }
   static async getItemById(id: string): Promise<IBlogOutput | null> {
+    if (!ObjectId.isValid(id)) return null;
     const blog = await BlogRepository.getItemById(id);
     return blog;
   }

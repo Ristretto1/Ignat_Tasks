@@ -3,11 +3,32 @@ import { blogCollection } from '../db/db';
 import { IBlogOutput } from '../models/blogs/output.types';
 import { IBlogDB } from '../models/db/db.types';
 import { blogMapper } from '../models/blogs/mapper/blogMapper';
+import { IQueryBlogData } from '../models/blogs/query.types';
+import { IOutputModel } from '../models/common.types';
 
 export class BlogRepository {
-  static async getAll(): Promise<IBlogOutput[]> {
-    const blogs = await blogCollection.find({}).toArray();
-    return blogs.map(blogMapper);
+  static async getAll(sortData: IQueryBlogData): Promise<IOutputModel<IBlogOutput>> {
+    const { pageNumber, pageSize, searchNameTerm, sortBy, sortDirection } = sortData;
+    let filter = {};
+    if (searchNameTerm) filter = { name: { $regex: searchNameTerm, $options: 'i' } };
+
+    const blogs = await blogCollection
+      .find(filter)
+      .sort(sortBy, sortDirection)
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize)
+      .toArray();
+
+    const totalCount = await blogCollection.countDocuments(filter);
+    const pagesCount = Math.ceil(totalCount / pageSize);
+
+    return {
+      items: blogs.map(blogMapper),
+      page: pageNumber,
+      pagesCount,
+      pageSize,
+      totalCount,
+    };
   }
   static async getItemById(id: string): Promise<IBlogOutput | null> {
     const currentItem = await blogCollection.findOne({ _id: new ObjectId(id) });

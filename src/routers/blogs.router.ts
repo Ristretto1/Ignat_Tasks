@@ -1,17 +1,31 @@
 import { Router, Request, Response } from 'express';
-import { HTTP_STATUSES } from '../models/common.types';
+import { HTTP_STATUSES, IOutputModel } from '../models/common.types';
 import { authMiddleware } from '../middlewares/auth/auth.middleware';
 import { ICreateBlog, IUpdateBlog } from '../models/blogs/input.types';
 import { IBlogOutput } from '../models/blogs/output.types';
 import { blogsInputModelValidation } from '../validators/blogs.validator';
 import { BlogService } from '../services/blogs.service';
+import { IQueryBlogData } from '../models/blogs/query.types';
 
 export const blogsRouter = Router();
 
-blogsRouter.get('/', async (req: Request, res: Response<IBlogOutput[]>) => {
-  const blogs: IBlogOutput[] = await BlogService.getAll();
-  return res.send(blogs);
-});
+blogsRouter.get(
+  '/',
+  async (
+    req: Request<unknown, unknown, unknown, IQueryBlogData>,
+    res: Response<IOutputModel<IBlogOutput>>
+  ) => {
+    const { pageNumber, pageSize, searchNameTerm, sortBy, sortDirection } = req.query;
+    const blogs = await BlogService.getAll({
+      pageNumber,
+      pageSize,
+      searchNameTerm,
+      sortBy,
+      sortDirection,
+    });
+    return res.send(blogs);
+  }
+);
 
 blogsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IBlogOutput>) => {
   const { id } = req.params;

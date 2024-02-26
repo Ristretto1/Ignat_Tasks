@@ -26,10 +26,16 @@ describe(route, () => {
   });
 
   it('+ GET all items = []', async () => {
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
+      items: [],
+      page: 1,
+      pagesCount: 0,
+      pageSize: 10,
+      totalCount: 0,
+    });
   });
 
-  // // -- INCORRECT ID -- //
+  // // // -- INCORRECT ID -- //
   it('- PUT item with incorrect id', async () => {
     const data: IUpdateBlog = {
       description: 'update description',
@@ -48,16 +54,28 @@ describe(route, () => {
       .delete(`${route}/-100`)
       .set('authorization', 'Basic YWRtaW46cXdlcnR5')
       .expect(HTTP_STATUSES.NOT_FOUND_404);
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
+      items: [],
+      page: 1,
+      pagesCount: 0,
+      pageSize: 10,
+      totalCount: 0,
+    });
   });
   it('- GET item with incorrect id', async () => {
-    await request(app).get(`${route}/-100`).expect(HTTP_STATUSES.NOT_FOUND_404);
+    await request(app).get(`${route}/100`).expect(HTTP_STATUSES.NOT_FOUND_404);
   });
 
-  // // -- UNAUTH -- //
+  // // // -- UNAUTH -- //
   it('- DELETE item unauth', async () => {
     await request(app).delete(`${route}/-100`).expect(HTTP_STATUSES.UNAUTHORIZED_401);
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
+      items: [],
+      page: 1,
+      pagesCount: 0,
+      pageSize: 10,
+      totalCount: 0,
+    });
   });
   it('- POST item unauth', async () => {
     const data: ICreateBlog = {
@@ -67,7 +85,13 @@ describe(route, () => {
     };
 
     await request(app).post(route).send(data).expect(HTTP_STATUSES.UNAUTHORIZED_401);
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
+      items: [],
+      page: 1,
+      pagesCount: 0,
+      pageSize: 10,
+      totalCount: 0,
+    });
   });
   it('- PUT item unauth', async () => {
     const data: IUpdateBlog = {
@@ -77,7 +101,13 @@ describe(route, () => {
     };
 
     await request(app).put(`${route}/-100`).send(data).expect(HTTP_STATUSES.UNAUTHORIZED_401);
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
+      items: [],
+      page: 1,
+      pagesCount: 0,
+      pageSize: 10,
+      totalCount: 0,
+    });
   });
 
   let newItem1: IBlogOutput;
@@ -109,7 +139,15 @@ describe(route, () => {
       isMembership: false,
       createdAt: expect.any(String),
     });
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem1]);
+    await request(app)
+      .get(route)
+      .expect(HTTP_STATUSES.OK_200, {
+        items: [newItem1],
+        page: 1,
+        pagesCount: 1,
+        pageSize: 10,
+        totalCount: 1,
+      });
   });
   it('+ POST second item with correct input data', async () => {
     const res = await request(app)
@@ -128,7 +166,15 @@ describe(route, () => {
       isMembership: false,
       createdAt: expect.any(String),
     });
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem1, newItem2]);
+    await request(app)
+      .get(route)
+      .expect(HTTP_STATUSES.OK_200, {
+        items: [newItem2, newItem1],
+        page: 1,
+        pagesCount: 1,
+        pageSize: 10,
+        totalCount: 2,
+      });
   });
 
   // -- INCORRECT DATA -- //
@@ -166,7 +212,15 @@ describe(route, () => {
       .set('authorization', 'Basic YWRtaW46cXdlcnR5')
       .send(data3)
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem1, newItem2]);
+    await request(app)
+      .get(route)
+      .expect(HTTP_STATUSES.OK_200, {
+        items: [newItem2, newItem1],
+        page: 1,
+        pagesCount: 1,
+        pageSize: 10,
+        totalCount: 2,
+      });
   });
   it('- PUT fisrt item with incorrect data', async () => {
     const data1: IUpdateBlog = {
@@ -201,7 +255,15 @@ describe(route, () => {
       .send(data3)
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem1, newItem2]);
+    await request(app)
+      .get(route)
+      .expect(HTTP_STATUSES.OK_200, {
+        items: [newItem2, newItem1],
+        page: 1,
+        pagesCount: 1,
+        pageSize: 10,
+        totalCount: 2,
+      });
   });
 
   it('+ GET fisrt item by id', async () => {
@@ -229,13 +291,19 @@ describe(route, () => {
 
     await request(app)
       .get(route)
-      .expect(HTTP_STATUSES.OK_200, [
-        {
-          ...newItem1,
-          ...data,
-        },
-        newItem2,
-      ]);
+      .expect(HTTP_STATUSES.OK_200, {
+        items: [
+          newItem2,
+          {
+            ...newItem1,
+            ...data,
+          },
+        ],
+        page: 1,
+        pagesCount: 1,
+        pageSize: 10,
+        totalCount: 2,
+      });
   });
 
   it('+ DELETE fisrt item', async () => {
@@ -243,13 +311,27 @@ describe(route, () => {
       .delete(`${route}/${newItem1.id}`)
       .set('authorization', 'Basic YWRtaW46cXdlcnR5')
       .expect(HTTP_STATUSES.NO_CONTENT_204);
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, [newItem2]);
+    await request(app)
+      .get(route)
+      .expect(HTTP_STATUSES.OK_200, {
+        items: [newItem2],
+        page: 1,
+        pagesCount: 1,
+        pageSize: 10,
+        totalCount: 1,
+      });
   });
   it('+ DELETE second item', async () => {
     await request(app)
       .delete(`${route}/${newItem2.id}`)
       .set('authorization', 'Basic YWRtaW46cXdlcnR5')
       .expect(HTTP_STATUSES.NO_CONTENT_204);
-    await request(app).get(route).expect(HTTP_STATUSES.OK_200, []);
+    await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
+      items: [],
+      page: 1,
+      pagesCount: 0,
+      pageSize: 10,
+      totalCount: 0,
+    });
   });
 });
