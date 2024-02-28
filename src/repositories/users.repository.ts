@@ -7,7 +7,7 @@ import { IQueryUserData } from '../models/users/query.types';
 import { IUserDB } from '../models/db/db.types';
 
 export class UserRepository {
-  static async getAll(data: IQueryUserData): Promise<IUserOutput[]> {
+  static async getAll(data: IQueryUserData): Promise<IOutputModel<IUserOutput>> {
     let { pageNumber, pageSize, searchEmailTerm, searchLoginTerm, sortBy, sortDirection } = data;
     pageNumber = Number(pageNumber);
     pageSize = Number(pageSize);
@@ -33,7 +33,13 @@ export class UserRepository {
     const totalCount = await userCollection.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
-    return users.map(usersMapper);
+    return {
+      items: users.map(usersMapper),
+      page: pageNumber,
+      pagesCount,
+      pageSize,
+      totalCount,
+    };
   }
   static async removeUser(id: string): Promise<boolean> {
     const res = await userCollection.deleteOne({ _id: new ObjectId(id) });

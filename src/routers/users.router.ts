@@ -18,7 +18,10 @@ export const usersRouter = Router({});
 usersRouter.get(
   '/',
   authMiddleware,
-  async (req: RequestWithQuery<Partial<IQueryUserData>>, res: Response<IUserOutput[]>) => {
+  async (
+    req: RequestWithQuery<Partial<IQueryUserData>>,
+    res: Response<IOutputModel<IUserOutput>>
+  ) => {
     const sortData: IQueryUserData = {
       pageNumber: req.query.pageNumber ?? 1,
       pageSize: req.query.pageSize ?? 10,
