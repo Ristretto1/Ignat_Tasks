@@ -34,7 +34,7 @@ const emailValidation = body('email')
   .trim()
   .isLength({ min: 1 })
   .withMessage('content length must be min: 1')
-  .matches(`^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$`)
+  .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   .custom(async (email) => {
     const user = await userCollection.find({ email: { $regex: email } });
     if (user) throw new Error('this email is exist');
