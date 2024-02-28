@@ -46,16 +46,17 @@ export class UserRepository {
     return !!res.deletedCount;
   }
 
-  static async createUser(data: IUserDB): Promise<IUserOutput | null> {
+  static async createUser(data: IUserDB): Promise<IUserOutput> {
     const res = await userCollection.insertOne(data);
     const index = res.insertedId;
-    const user = await userCollection.findOne({ _id: index });
-    if (user) return usersMapper(user);
-    else {
-      console.log('');
-      console.log('Я НЕ НАШЕЛ ЮЗЕРА');
-      console.log('');
-      return null;
-    }
+    // const user = await userCollection.findOne({ _id: index });
+    // if (user) return usersMapper(user);
+    // else return null;
+    return {
+      createdAt: data.createdAt,
+      email: data.email,
+      id: index.toString(),
+      login: data.login,
+    };
   }
 }

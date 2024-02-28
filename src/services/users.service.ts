@@ -18,7 +18,7 @@ export class UserService {
     return await UserRepository.removeUser(id);
   }
 
-  static async createUser(data: ICreateUser): Promise<IUserOutput | null> {
+  static async createUser(data: ICreateUser): Promise<IUserOutput> {
     const hash = await HashServise.generateHash(data.password);
 
     const createData: IUserDB = {
