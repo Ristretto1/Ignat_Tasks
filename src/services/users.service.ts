@@ -8,7 +8,7 @@ import { IUserDB } from '../models/db/db.types';
 import bcrypt from 'bcrypt';
 
 export class UserService {
-  static async getAll(data: IQueryUserData): Promise<IUserOutput[]> {
+  static async getAll(data: IQueryUserData): Promise<IOutputModel<IUserOutput>> {
     return await UserRepository.getAll(data);
   }
 
