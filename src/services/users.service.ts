@@ -6,6 +6,7 @@ import { UserRepository } from '../repositories/users.repository';
 import { ICreateUser } from '../models/users/input.types';
 import { IUserDB } from '../models/db/db.types';
 import bcrypt from 'bcrypt';
+import { HashServise } from './hash.service';
 
 export class UserService {
   static async getAll(data: IQueryUserData): Promise<IOutputModel<IUserOutput>> {
@@ -18,8 +19,7 @@ export class UserService {
   }
 
   static async createUser(data: ICreateUser): Promise<IUserOutput | null> {
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(data.password, salt);
+    const hash = await HashServise.generateHash(data.password);
 
     const createData: IUserDB = {
       createdAt: new Date().toISOString(),

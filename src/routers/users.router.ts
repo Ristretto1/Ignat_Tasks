@@ -51,10 +51,11 @@ usersRouter.post(
   '/',
   authMiddleware,
   usersInputModelValidation(),
-  async (req: RequestWithBody<ICreateUser>, res: Response<IUserOutput>) => {
+  async (req: RequestWithBody<ICreateUser>, res: Response<IUserOutput | string>) => {
     const { email, login, password } = req.body;
     const user = await UserService.createUser({ email, login, password });
-    if (!user) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
+    // if (!user) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
+    if (!user) return res.status(HTTP_STATUSES.BAD_REQUEST_400).send('Я НЕ НАШЕЛ ЮЗЕРА');
     else return res.status(HTTP_STATUSES.CREATED_201).send(user);
   }
 );
