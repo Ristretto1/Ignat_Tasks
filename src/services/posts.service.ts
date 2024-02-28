@@ -1,37 +1,18 @@
 import { ObjectId } from 'bson';
-import { postCollection } from '../db/db';
 import { IPostDB } from '../models/db/db.types';
 import { IPostOutput } from '../models/posts/output.types';
-import { postMapper } from '../models/posts/postMapper/postMapper';
 import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
-import { PostRepository } from '../repositories/posts.repository';
-import { BlogRepository } from '../repositories/blogs.repository';
-import { IOutputModel } from '../models/common.types';
-import { IQueryPostData } from '../models/posts/query.types';
+import { PostRepository } from '../repositories/posts/posts.repository';
+
+import { BlogQueryRepository } from '../repositories/blogs/blogs.query.repo';
 
 export class PostService {
-  static async getAll(data: IQueryPostData): Promise<IOutputModel<IPostOutput>> {
-    const sortData: IQueryPostData = {
-      pageNumber: data.pageNumber ?? 1,
-      pageSize: data.pageSize ?? 10,
-      sortBy: data.sortBy ?? 'createdAt',
-      sortDirection: data.sortDirection ?? 'desc',
-    };
-    const posts = await PostRepository.getAll(sortData);
-    return posts;
-  }
-  static async getItemById(id: string): Promise<IPostOutput | null> {
-    if (!ObjectId.isValid(id)) return null;
-    const currentItem = await PostRepository.getItemById(id);
-    if (currentItem) return currentItem;
-    return null;
-  }
-  static async removeItemById(id: string): Promise<boolean> {
+  static async removePostById(id: string): Promise<boolean> {
     if (!ObjectId.isValid(id)) return false;
-    return await PostRepository.removeItemById(id);
+    return await PostRepository.removePostById(id);
   }
-  static async createItem(data: ICreatePost): Promise<IPostOutput | null> {
-    const currentBlog = await BlogRepository.getItemById(data.blogId);
+  static async createPost(data: ICreatePost): Promise<IPostOutput | null> {
+    const currentBlog = await BlogQueryRepository.getBlogById(data.blogId);
     if (!currentBlog) return null;
 
     const postModel: IPostDB = {
@@ -43,11 +24,9 @@ export class PostService {
       createdAt: new Date().toISOString(),
     };
 
-    const currentIndex = await PostRepository.createItem(postModel);
-    const item = await this.getItemById(currentIndex);
-    return item;
+    return await PostRepository.createPost(postModel);
   }
-  static async updateItem(id: string, data: IUpdatePost): Promise<boolean> {
+  static async updatePost(id: string, data: IUpdatePost): Promise<boolean> {
     if (!ObjectId.isValid(id)) return false;
 
     const postModel: IUpdatePost = {
@@ -56,6 +35,6 @@ export class PostService {
       shortDescription: data.shortDescription,
       title: data.title,
     };
-    return await PostRepository.updateItem(id, postModel);
+    return await PostRepository.updatePost(id, postModel);
   }
 }
