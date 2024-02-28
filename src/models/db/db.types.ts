@@ -13,3 +13,10 @@ export interface IPostDB {
   blogName: string;
   createdAt: string;
 }
+
+export interface IUserDB {
+  login: string;
+  email: string;
+  createdAt: string;
+  hash: string;
+}

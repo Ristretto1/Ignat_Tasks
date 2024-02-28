@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export enum HTTP_STATUSES {
   OK_200 = 200,
   CREATED_201 = 201,
@@ -12,6 +14,8 @@ export enum AppRouterPath {
   testing = '/testing',
   blogs = '/blogs',
   posts = '/posts',
+  users = '/users',
+  auth = '/auth',
 }
 
 export interface IErrorMessage {
@@ -30,3 +34,9 @@ export interface IOutputModel<I> {
   totalCount: number;
   items: I[];
 }
+
+export type RequestWithParams<P> = Request<P, unknown, unknown, unknown>;
+export type RequestWithParamsAndQuery<P, Q> = Request<P, unknown, unknown, Q>;
+export type RequestWithQuery<Q> = Request<unknown, unknown, unknown, Q>;
+export type RequestWithBody<B> = Request<unknown, unknown, B, unknown>;
+export type RequestWithParamsAndBody<P, B> = Request<P, unknown, B, unknown>;
