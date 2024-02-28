@@ -14,10 +14,14 @@ export class UserRepository {
 
     let filter = {};
     const emailFilter = { email: { $regex: searchEmailTerm, $options: 'i' } };
-    const loginFilter = { login: { $regex: searchLoginTerm, $options: 'i' } };
-    if (searchEmailTerm) filter = emailFilter;
-    if (searchLoginTerm) filter = loginFilter;
-    if (searchLoginTerm && searchEmailTerm) filter = { $or: [emailFilter, loginFilter] };
+    const loginFilter = { email: { $regex: searchLoginTerm, $options: 'i' } };
+    if (searchLoginTerm && searchEmailTerm) {
+      filter = { $or: [emailFilter, loginFilter] };
+    } else if (searchEmailTerm) {
+      filter = emailFilter;
+    } else if (searchLoginTerm) {
+      filter = loginFilter;
+    }
 
     const users = await userCollection
       .find(filter)
@@ -47,6 +51,11 @@ export class UserRepository {
     const index = res.insertedId;
     const user = await userCollection.findOne({ _id: index });
     if (user) return usersMapper(user);
-    else return null;
+    else {
+      console.log('');
+      console.log('Я НЕ НАШЕЛ ЮЗЕРА');
+      console.log('');
+      return null;
+    }
   }
 }
