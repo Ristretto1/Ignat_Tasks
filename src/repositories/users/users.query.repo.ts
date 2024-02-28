@@ -1,12 +1,10 @@
-import { ObjectId } from 'mongodb';
-import { userCollection } from '../db/db';
-import { IOutputModel } from '../models/common.types';
-import { usersMapper } from '../models/users/mapper/usersMapper';
-import { IUserOutput } from '../models/users/output.types';
-import { IQueryUserData } from '../models/users/query.types';
-import { IUserDB } from '../models/db/db.types';
+import { userCollection } from '../../db/db';
+import { IOutputModel } from '../../models/common.types';
+import { usersMapper } from '../../models/users/mapper/usersMapper';
+import { IUserOutput } from '../../models/users/output.types';
+import { IQueryUserData } from '../../models/users/query.types';
 
-export class UserRepository {
+export class UserQueryRepository {
   static async getAll(data: IQueryUserData): Promise<IOutputModel<IUserOutput>> {
     let { pageNumber, pageSize, searchEmailTerm, searchLoginTerm, sortBy, sortDirection } = data;
     pageNumber = Number(pageNumber);
@@ -35,24 +33,6 @@ export class UserRepository {
       pageSize,
       totalCount,
       items: users.map(usersMapper),
-    };
-  }
-  static async removeUser(id: string): Promise<boolean> {
-    const res = await userCollection.deleteOne({ _id: new ObjectId(id) });
-    return !!res.deletedCount;
-  }
-
-  static async createUser(data: IUserDB): Promise<IUserOutput> {
-    const res = await userCollection.insertOne(data);
-    const index = res.insertedId;
-    // const user = await userCollection.findOne({ _id: index });
-    // if (user) return usersMapper(user);
-    // else return null;
-    return {
-      createdAt: data.createdAt,
-      email: data.email,
-      id: index.toString(),
-      login: data.login,
     };
   }
 }

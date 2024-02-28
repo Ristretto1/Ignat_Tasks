@@ -3,35 +3,40 @@ import { IPostOutput } from '../models/posts/output.types';
 import { HTTP_STATUSES, IOutputModel } from '../models/common.types';
 import { authMiddleware } from '../middlewares/auth/auth.middleware';
 import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
-import { BlogRepository } from '../repositories/blogs.repository';
 import { postsInputModelValidation } from '../validators/posts.validator';
-import { IPostDB } from '../models/db/db.types';
 import { ObjectId } from 'mongodb';
 import { PostService } from '../services/posts.service';
 import { IQueryPostData } from '../models/posts/query.types';
+import { PostQueryRepository } from '../repositories/posts/posts.query.repo';
 
 export const postsRouter = Router();
 
 postsRouter.get(
   '/',
-  async (
-    req: Request<unknown, unknown, unknown, IQueryPostData>,
-    res: Response<IOutputModel<IPostOutput>>
-  ) => {
+  async (req: Request<unknown, unknown, unknown, IQueryPostData>, res: Response<IOutputModel<IPostOutput>>) => {
     const { pageNumber, pageSize, sortBy, sortDirection } = req.query;
-    const posts = await PostService.getAll({ pageNumber, pageSize, sortBy, sortDirection });
+    const sortData: IQueryPostData = {
+      pageNumber: pageNumber ?? 1,
+      pageSize: pageSize ?? 10,
+      sortBy: sortBy ?? 'createdAt',
+      sortDirection: sortDirection ?? 'desc',
+    };
+
+    const posts = await PostQueryRepository.getAll(sortData);
     return res.send(posts);
   }
 );
 postsRouter.get('/:id', async (req: Request<{ id: string }>, res: Response<IPostOutput>) => {
   const { id } = req.params;
-  const post = await PostService.getItemById(id);
+  if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+
+  const post = await PostQueryRepository.getPostById(id);
   if (post) return res.send(post);
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
 postsRouter.delete('/:id', authMiddleware, async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
-  const isDeleted = await PostService.removeItemById(id);
+  const isDeleted = await PostService.removePostById(id);
   if (!isDeleted) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
   return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 });
@@ -42,7 +47,7 @@ postsRouter.post(
   async (req: Request<unknown, unknown, ICreatePost>, res: Response<IPostOutput>) => {
     const { blogId, content, shortDescription, title } = req.body;
 
-    const post = await PostService.createItem({ blogId, content, shortDescription, title });
+    const post = await PostService.createPost({ blogId, content, shortDescription, title });
     if (post) return res.status(HTTP_STATUSES.CREATED_201).send(post);
     else return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
   }
@@ -55,7 +60,7 @@ postsRouter.put(
     const { blogId, content, shortDescription, title } = req.body;
     const { id } = req.params;
 
-    const isUpdate = await PostService.updateItem(id, { blogId, content, shortDescription, title });
+    const isUpdate = await PostService.updatePost(id, { blogId, content, shortDescription, title });
     if (!isUpdate) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   }

@@ -17,9 +17,7 @@ describe(route, () => {
 
   beforeAll(async () => {
     await client.connect();
-    await request(app)
-      .delete(`${AppRouterPath.testing}/all-data`)
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).delete(`${AppRouterPath.testing}/all-data`).expect(HTTP_STATUSES.NO_CONTENT_204);
 
     const res = await request(app)
       .post(AppRouterPath.blogs)
@@ -35,9 +33,7 @@ describe(route, () => {
   });
 
   afterAll(async () => {
-    await request(app)
-      .delete(`${AppRouterPath.testing}/all-data`)
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).delete(`${AppRouterPath.testing}/all-data`).expect(HTTP_STATUSES.NO_CONTENT_204);
     await client.close();
   });
 
@@ -51,7 +47,7 @@ describe(route, () => {
     });
   });
 
-  // -- INCORRECT ID -- //
+  // // -- INCORRECT ID -- //
   it('- PUT item with incorrect id', async () => {
     const data: ICreatePost = {
       blogId: blog.id,

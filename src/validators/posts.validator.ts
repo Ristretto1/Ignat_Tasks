@@ -1,6 +1,7 @@
 import { body } from 'express-validator';
-import { BlogRepository } from '../repositories/blogs.repository';
+import { BlogRepository } from '../repositories/blogs/blogs.repository';
 import { inputModelValidation } from '../middlewares/inputModelValidation/inputModelValidation.middleware';
+import { BlogQueryRepository } from '../repositories/blogs/blogs.query.repo';
 
 const titleValidation = body('title')
   .notEmpty()
@@ -38,15 +39,15 @@ const blogIdValidation = body('blogId')
   .isLength({ min: 1 })
   .withMessage('content length must be min: 1')
   .custom(async (id) => {
-    const blog = await BlogRepository.getItemById(id);
+    const blog = await BlogQueryRepository.getBlogById(id);
     if (!blog) throw new Error('this blogId is not found');
     else return true;
   });
 
-  export const postsInputModelValidation = () => [
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    blogIdValidation,
-    inputModelValidation,
-  ];
+export const postsInputModelValidation = () => [
+  titleValidation,
+  shortDescriptionValidation,
+  contentValidation,
+  blogIdValidation,
+  inputModelValidation,
+];
