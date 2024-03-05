@@ -11,9 +11,7 @@ describe(`tests for ${AppRouterPath.users}`, () => {
   const client = new MongoClient(uri);
   beforeAll(async () => {
     await client.connect();
-    await request(app)
-      .delete(`${AppRouterPath.testing}/all-data`)
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).delete(`${AppRouterPath.testing}/all-data`).expect(HTTP_STATUSES.NO_CONTENT_204);
   });
 
   afterAll(async () => {
@@ -165,10 +163,7 @@ describe(`tests for ${AppRouterPath.users}`, () => {
       password: 'password2',
     };
 
-    await request(app)
-      .post(`${AppRouterPath.auth}/login`)
-      .send(incorrectData)
-      .expect(HTTP_STATUSES.UNAUTHORIZED_401);
+    await request(app).post(`${AppRouterPath.auth}/login`).send(incorrectData).expect(HTTP_STATUSES.UNAUTHORIZED_401);
   });
   it('- POST auth with incorrect password', async () => {
     const incorrectData = {
@@ -176,10 +171,7 @@ describe(`tests for ${AppRouterPath.users}`, () => {
       password: 'krya000k',
     };
 
-    await request(app)
-      .post(`${AppRouterPath.auth}/login`)
-      .send(incorrectData)
-      .expect(HTTP_STATUSES.UNAUTHORIZED_401);
+    await request(app).post(`${AppRouterPath.auth}/login`).send(incorrectData).expect(HTTP_STATUSES.UNAUTHORIZED_401);
   });
 
   // AUTH CORRECT LOGIN PASSWORD
@@ -189,10 +181,7 @@ describe(`tests for ${AppRouterPath.users}`, () => {
       password: 'password2',
     };
 
-    await request(app)
-      .post(`${AppRouterPath.auth}/login`)
-      .send(correctData)
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).post(`${AppRouterPath.auth}/login`).send(correctData).expect(HTTP_STATUSES.NO_CONTENT_204);
   });
 
   // DELETE CORRECT ID
