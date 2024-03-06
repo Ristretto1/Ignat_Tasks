@@ -4,3 +4,9 @@ export interface IUserOutput {
   email: string;
   createdAt: string;
 }
+
+export interface IMeUserOutput {
+  userId: string;
+  login: string;
+  email: string;
+}

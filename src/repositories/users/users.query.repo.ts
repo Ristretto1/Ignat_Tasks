@@ -1,7 +1,8 @@
+import { ObjectId } from 'mongodb';
 import { userCollection } from '../../db/db';
 import { IOutputModel } from '../../models/common.types';
-import { usersMapper } from '../../models/users/mapper/usersMapper';
-import { IUserOutput } from '../../models/users/output.types';
+import { meUserMapper, usersMapper } from '../../models/users/mapper/usersMapper';
+import { IMeUserOutput, IUserOutput } from '../../models/users/output.types';
 import { IQueryUserData } from '../../models/users/query.types';
 
 export class UserQueryRepository {
@@ -34,5 +35,9 @@ export class UserQueryRepository {
       totalCount,
       items: users.map(usersMapper),
     };
+  }
+  static async getUserById(id: string): Promise<IMeUserOutput> {
+    const user = await userCollection.findOne({ _id: new ObjectId(id) });
+    return meUserMapper(user!);
   }
 }

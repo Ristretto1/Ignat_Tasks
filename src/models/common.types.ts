@@ -7,6 +7,7 @@ export enum HTTP_STATUSES {
 
   BAD_REQUEST_400 = 400,
   UNAUTHORIZED_401 = 401,
+  FORBIDDEN_403 = 403,
   NOT_FOUND_404 = 404,
 }
 
@@ -16,6 +17,7 @@ export enum AppRouterPath {
   posts = '/posts',
   users = '/users',
   auth = '/auth',
+  comments = '/comments',
 }
 
 export interface IErrorMessage {
@@ -40,3 +42,7 @@ export type RequestWithParamsAndQuery<P, Q> = Request<P, unknown, unknown, Q>;
 export type RequestWithQuery<Q> = Request<unknown, unknown, unknown, Q>;
 export type RequestWithBody<B> = Request<unknown, unknown, B, unknown>;
 export type RequestWithParamsAndBody<P, B> = Request<P, unknown, B, unknown>;
+
+export interface ITokenOutput {
+  accessToken: string;
+}

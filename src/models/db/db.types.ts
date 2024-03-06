@@ -20,3 +20,13 @@ export interface IUserDB {
   createdAt: string;
   hash: string;
 }
+
+export interface ICommentDB {
+  content: string;
+  commentatorInfo: {
+    userId: string;
+    userLogin: string;
+  };
+  createdAt: string;
+  postId: string;
+}
