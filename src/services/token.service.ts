@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { SETTINGS } from '../settings/settings';
 
 export class TokenService {
-  static createToken(payload: any): string {
+  static async createToken(payload: any): Promise<string> {
     return jwt.sign(payload, SETTINGS.SECRET_KEY, { expiresIn: '1h' });
   }
   static async verifyToken(token: string): Promise<any> {
