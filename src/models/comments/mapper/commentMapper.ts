@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { IBlogDB, ICommentDB } from '../../db/db.types';
+import { ICommentDB } from '../../db/db.types';
 import { ICommentOutput } from '../output.types';
 
 export const commentMapper = (commentDb: WithId<ICommentDB>): ICommentOutput => {

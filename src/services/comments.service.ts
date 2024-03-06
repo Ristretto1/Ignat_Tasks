@@ -1,5 +1,5 @@
 import { IUpdateComment } from '../models/comments/input.types';
-import { ICommentDB } from '../models/db/db.types';
+import { ICommentUpdateModel } from '../models/comments/models.types';
 import { CommentQueryRepository } from '../repositories/comments/comments.query.repo';
 import { CommentRepository } from '../repositories/comments/comments.repository';
 
@@ -11,7 +11,7 @@ export class CommentService {
     const comment = await CommentQueryRepository.getCommentById(id);
     if (!comment) return false;
 
-    const dataForUpdate: ICommentDB = {
+    const dataForUpdate: ICommentUpdateModel = {
       commentatorInfo: {
         userId: comment.commentatorInfo.userId,
         userLogin: comment.commentatorInfo.userLogin,

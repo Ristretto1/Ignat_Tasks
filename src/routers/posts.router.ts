@@ -1,13 +1,20 @@
 import { Router, Request, Response } from 'express';
 import { IPostOutput } from '../models/posts/output.types';
-import { HTTP_STATUSES, IOutputModel } from '../models/common.types';
-import { authMiddleware } from '../middlewares/auth/auth.middleware';
+import {
+  HTTP_STATUSES,
+  IOutputModel,
+  RequestWithParamsAndBody,
+  RequestWithParamsAndQuery,
+} from '../models/common.types';
+import { authMiddleware, authTokenMiddleware } from '../middlewares/auth/auth.middleware';
 import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
 import { postsInputModelValidation } from '../validators/posts.validator';
 import { ObjectId } from 'mongodb';
 import { PostService } from '../services/posts.service';
 import { IQueryPostData } from '../models/posts/query.types';
 import { PostQueryRepository } from '../repositories/posts/posts.query.repo';
+import { IQueryCommentData } from '../models/comments/query.types';
+import { ICreateComment } from '../models/comments/input.types';
 
 export const postsRouter = Router();
 
@@ -63,5 +70,38 @@ postsRouter.put(
     const isUpdate = await PostService.updatePost(id, { blogId, content, shortDescription, title });
     if (!isUpdate) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+  }
+);
+postsRouter.get(
+  '/:id/comments',
+  async (req: RequestWithParamsAndQuery<{ id: string }, IQueryCommentData>, res: Response) => {
+    const { id } = req.params;
+    const { pageNumber, pageSize, sortBy, sortDirection } = req.query;
+
+    if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+
+    const sortData: IQueryCommentData = {
+      pageNumber: pageNumber ?? 1,
+      pageSize: pageSize ?? 10,
+      sortBy: sortBy ?? 'createdAt',
+      sortDirection: sortDirection ?? 'desc',
+    };
+
+    const comments = await PostQueryRepository.getCommentsByPostId(id, sortData);
+    return res.send(comments);
+  }
+);
+postsRouter.post(
+  '/:id/comments',
+  authTokenMiddleware,
+  async (req: RequestWithParamsAndBody<{ id: string }, ICreateComment>, res: Response) => {
+    const { userId } = req;
+    const { id } = req.params;
+    const { content } = req.body;
+    if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+
+    const comment = await PostService.createCommentById(userId!, id, { content });
+    if (comment) return res.status(HTTP_STATUSES.CREATED_201).send(comment);
+    else return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
   }
 );

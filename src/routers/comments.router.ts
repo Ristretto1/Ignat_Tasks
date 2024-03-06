@@ -7,6 +7,7 @@ import { CommentService } from '../services/comments.service';
 import { ICommentOutput } from '../models/comments/output.types';
 import { IUpdateComment } from '../models/comments/input.types';
 import { commentsInputModelValidation } from '../validators/comments.validator';
+import { authTokenMiddleware } from '../middlewares/auth/auth.middleware';
 
 export const commentsRouter = Router();
 
@@ -19,11 +20,9 @@ commentsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: R
   else return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
 
-commentsRouter.delete('/:id', async (req: RequestWithParams<{ id: string }>, res: Response) => {
+commentsRouter.delete('/:id', authTokenMiddleware, async (req: RequestWithParams<{ id: string }>, res: Response) => {
   const { id } = req.params;
   if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-
-  //TODO: AUTH //TODO:
 
   const isDeleted = await CommentService.removeCommentById(id);
   if (isDeleted) return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
@@ -32,13 +31,12 @@ commentsRouter.delete('/:id', async (req: RequestWithParams<{ id: string }>, res
 
 commentsRouter.put(
   '/:id',
+  authTokenMiddleware,
   commentsInputModelValidation(),
   async (req: RequestWithParamsAndBody<{ id: string }, IUpdateComment>, res: Response) => {
     const { id } = req.params;
     const { content } = req.body;
     if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-
-    //TODO: AUTH //TODO:
 
     const isUpdated = await CommentService.updateCommentById(id, { content });
     if (isUpdated) return res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);

@@ -28,4 +28,5 @@ export interface ICommentDB {
     userLogin: string;
   };
   createdAt: string;
+  postId: string;
 }

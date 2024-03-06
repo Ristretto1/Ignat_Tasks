@@ -1,8 +1,9 @@
 import { ObjectId } from 'bson';
-import { postCollection } from '../../db/db';
-import { IPostDB } from '../../models/db/db.types';
+import { commentCollection, postCollection } from '../../db/db';
+import { ICommentDB, IPostDB } from '../../models/db/db.types';
 import { IPostOutput } from '../../models/posts/output.types';
 import { IUpdatePost } from '../../models/posts/input.types';
+import { ICommentOutput } from '../../models/comments/output.types';
 
 export class PostRepository {
   static async removePostById(id: string): Promise<boolean> {
@@ -34,5 +35,17 @@ export class PostRepository {
       }
     );
     return !!res.matchedCount;
+  }
+  static async createCommentById(data: ICommentDB): Promise<ICommentOutput> {
+    const res = await commentCollection.insertOne(data);
+    return {
+      commentatorInfo: {
+        userId: data.commentatorInfo.userId,
+        userLogin: data.commentatorInfo.userLogin,
+      },
+      content: data.content,
+      createdAt: data.createdAt,
+      id: res.insertedId.toString(),
+    };
   }
 }

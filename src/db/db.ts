@@ -1,9 +1,8 @@
 import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
 import { IBlogDB, ICommentDB, IPostDB, IUserDB } from '../models/db/db.types';
-dotenv.config();
+import { SETTINGS } from '../settings/settings';
 
-const uri = process.env.LOCAL_URI || process.env.MONGO_URI || 'mongodb://localhost:27017';
+const uri = SETTINGS.LOCAL_URI;
 
 const client = new MongoClient(uri);
 const database = client.db();
@@ -16,7 +15,7 @@ export const runDb = async () => {
   try {
     await client.connect();
     console.log('Client connect to DB');
-    console.log(`Example app listening on port ${process.env.PORT}`);
+    console.log(`Example app listening on port ${SETTINGS.PORT}`);
     console.log('uri: ', uri);
   } catch (err) {
     console.log(`${err}`);
