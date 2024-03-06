@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 import { IBlogDB, ICommentDB, IPostDB, IUserDB } from '../models/db/db.types';
 import { SETTINGS } from '../settings/settings';
 
-const uri = SETTINGS.LOCAL_URI;
+const uri = SETTINGS.MONGO_URI;
 
 const client = new MongoClient(uri);
 const database = client.db();
