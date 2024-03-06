@@ -12,7 +12,7 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(data.password, res.hash);
     if (!isPasswordValid) return null;
 
-    const token = TokenService.createToken({ userId: res.id });
+    const token = await TokenService.createToken({ userId: res.id });
     return { accessToken: token };
   }
 }
