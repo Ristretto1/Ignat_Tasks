@@ -23,8 +23,8 @@ usersRouter.get(
     const sortData: IQueryUserData = {
       pageNumber: req.query.pageNumber ?? 1,
       pageSize: req.query.pageSize ?? 10,
-      searchEmailTerm: req.query.searchEmailTerm ?? null,
-      searchLoginTerm: req.query.searchLoginTerm ?? null,
+      searchEmailTerm: req.query.searchEmailTerm ?? '',
+      searchLoginTerm: req.query.searchLoginTerm ?? '',
       sortBy: req.query.sortBy ?? 'createdAt',
       sortDirection: req.query.sortDirection ?? 'desc',
     };

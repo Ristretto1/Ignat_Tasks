@@ -1,6 +1,5 @@
 import { ObjectId } from 'mongodb';
 import { commentCollection } from '../../db/db';
-import { ICommentDB } from '../../models/db/db.types';
 import { ICommentUpdateModel } from '../../models/comments/models.types';
 
 export class CommentRepository {
