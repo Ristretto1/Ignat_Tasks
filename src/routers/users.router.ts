@@ -5,7 +5,7 @@ import {
   IOutputModel,
   RequestWithBody,
   RequestWithParams,
-  RequestWithQuery,
+  RequestWithQuery
 } from '../models/common.types';
 import { UserService } from '../services/users.service';
 import { IUserOutput } from '../models/users/output.types';
@@ -23,10 +23,10 @@ usersRouter.get(
     const sortData: IQueryUserData = {
       pageNumber: req.query.pageNumber ?? 1,
       pageSize: req.query.pageSize ?? 10,
-      searchEmailTerm: req.query.searchEmailTerm ?? '',
-      searchLoginTerm: req.query.searchLoginTerm ?? '',
+      searchEmailTerm: req.query.searchEmailTerm ?? null,
+      searchLoginTerm: req.query.searchLoginTerm ?? null,
       sortBy: req.query.sortBy ?? 'createdAt',
-      sortDirection: req.query.sortDirection ?? 'desc',
+      sortDirection: req.query.sortDirection ?? 'desc'
     };
 
     const users = await UserQueryRepository.getAll(sortData);

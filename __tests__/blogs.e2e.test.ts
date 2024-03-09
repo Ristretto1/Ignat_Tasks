@@ -4,6 +4,7 @@ import { AppRouterPath, HTTP_STATUSES } from '../src/models/common.types';
 import { ICreateBlog, IUpdateBlog } from '../src/models/blogs/input.types';
 import { MongoClient } from 'mongodb';
 import { IBlogOutput } from '../src/models/blogs/output.types';
+import { createBlogData, createUpdateBlogData } from './testUtils/blogs.utils.test';
 
 const route = AppRouterPath.blogs;
 const uri = process.env.LOCAL_URI || 'mongodb://localhost:27017';
@@ -13,15 +14,11 @@ describe(route, () => {
 
   beforeAll(async () => {
     await client.connect();
-    await request(app)
-      .delete(`${AppRouterPath.testing}/all-data`)
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).delete(`${AppRouterPath.testing}/all-data`).expect(HTTP_STATUSES.NO_CONTENT_204);
   });
 
   afterAll(async () => {
-    await request(app)
-      .delete(`${AppRouterPath.testing}/all-data`)
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+    await request(app).delete(`${AppRouterPath.testing}/all-data`).expect(HTTP_STATUSES.NO_CONTENT_204);
     await client.close();
   });
 
@@ -31,17 +28,13 @@ describe(route, () => {
       page: 1,
       pagesCount: 0,
       pageSize: 10,
-      totalCount: 0,
+      totalCount: 0
     });
   });
 
   // // // -- INCORRECT ID -- //
   it('- PUT item with incorrect id', async () => {
-    const data: IUpdateBlog = {
-      description: 'update description',
-      name: 'update name',
-      websiteUrl: 'https://update.com',
-    };
+    const data: IUpdateBlog = createUpdateBlogData();
 
     await request(app)
       .put(`${route}/-100`)
@@ -54,12 +47,13 @@ describe(route, () => {
       .delete(`${route}/-100`)
       .set('authorization', 'Basic YWRtaW46cXdlcnR5')
       .expect(HTTP_STATUSES.NOT_FOUND_404);
+
     await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
       items: [],
       page: 1,
       pagesCount: 0,
       pageSize: 10,
-      totalCount: 0,
+      totalCount: 0
     });
   });
   it('- GET item with incorrect id', async () => {
@@ -74,15 +68,11 @@ describe(route, () => {
       page: 1,
       pagesCount: 0,
       pageSize: 10,
-      totalCount: 0,
+      totalCount: 0
     });
   });
   it('- POST item unauth', async () => {
-    const data: ICreateBlog = {
-      description: 'new description',
-      name: 'new name',
-      websiteUrl: 'abc@gmail.com',
-    };
+    const data = createBlogData();
 
     await request(app).post(route).send(data).expect(HTTP_STATUSES.UNAUTHORIZED_401);
     await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
@@ -90,15 +80,11 @@ describe(route, () => {
       page: 1,
       pagesCount: 0,
       pageSize: 10,
-      totalCount: 0,
+      totalCount: 0
     });
   });
   it('- PUT item unauth', async () => {
-    const data: IUpdateBlog = {
-      description: 'update description',
-      name: 'update name',
-      websiteUrl: 'https://update.com',
-    };
+    const data: IUpdateBlog = createUpdateBlogData();
 
     await request(app).put(`${route}/-100`).send(data).expect(HTTP_STATUSES.UNAUTHORIZED_401);
     await request(app).get(route).expect(HTTP_STATUSES.OK_200, {
@@ -106,22 +92,15 @@ describe(route, () => {
       page: 1,
       pagesCount: 0,
       pageSize: 10,
-      totalCount: 0,
+      totalCount: 0
     });
   });
 
   let newItem1: IBlogOutput;
   let newItem2: IBlogOutput;
-  const data1: ICreateBlog = {
-    description: 'new description1',
-    name: 'new name1',
-    websiteUrl: 'https://someurl1.com',
-  };
-  const data2: ICreateBlog = {
-    description: 'new description2',
-    name: 'new name2',
-    websiteUrl: 'https://someurl2.com',
-  };
+  const data1 = createBlogData();
+  const data2 = createBlogData();
+
   it('+ POST first item with correct input data', async () => {
     const res = await request(app)
       .post(route)
@@ -137,7 +116,7 @@ describe(route, () => {
       description: data1.description,
       websiteUrl: data1.websiteUrl,
       isMembership: false,
-      createdAt: expect.any(String),
+      createdAt: expect.any(String)
     });
     await request(app)
       .get(route)
@@ -146,7 +125,7 @@ describe(route, () => {
         page: 1,
         pagesCount: 1,
         pageSize: 10,
-        totalCount: 1,
+        totalCount: 1
       });
   });
   it('+ POST second item with correct input data', async () => {
@@ -164,7 +143,7 @@ describe(route, () => {
       description: data2.description,
       websiteUrl: data2.websiteUrl,
       isMembership: false,
-      createdAt: expect.any(String),
+      createdAt: expect.any(String)
     });
     await request(app)
       .get(route)
@@ -173,7 +152,7 @@ describe(route, () => {
         page: 1,
         pagesCount: 1,
         pageSize: 10,
-        totalCount: 2,
+        totalCount: 2
       });
   });
 
@@ -182,19 +161,19 @@ describe(route, () => {
     const data1: ICreateBlog = {
       description: '',
       name: 'new name',
-      websiteUrl: 'abc@gmail.com',
+      websiteUrl: 'abc@gmail.com'
     };
 
     const data2: ICreateBlog = {
       description: 'new description',
       name: '',
-      websiteUrl: 'abc@gmail.com',
+      websiteUrl: 'abc@gmail.com'
     };
 
     const data3: ICreateBlog = {
       description: 'new description',
       name: 'new name',
-      websiteUrl: '',
+      websiteUrl: ''
     };
 
     await request(app)
@@ -219,24 +198,24 @@ describe(route, () => {
         page: 1,
         pagesCount: 1,
         pageSize: 10,
-        totalCount: 2,
+        totalCount: 2
       });
   });
   it('- PUT fisrt item with incorrect data', async () => {
     const data1: IUpdateBlog = {
       description: '',
       name: 'update name',
-      websiteUrl: 'https://update.com',
+      websiteUrl: 'https://update.com'
     };
     const data2: IUpdateBlog = {
       description: 'update description',
       name: '',
-      websiteUrl: 'https://update.com',
+      websiteUrl: 'https://update.com'
     };
     const data3: IUpdateBlog = {
       description: 'update description',
       name: 'update name',
-      websiteUrl: '',
+      websiteUrl: ''
     };
 
     await request(app)
@@ -262,7 +241,7 @@ describe(route, () => {
         page: 1,
         pagesCount: 1,
         pageSize: 10,
-        totalCount: 2,
+        totalCount: 2
       });
   });
 
@@ -270,11 +249,7 @@ describe(route, () => {
     await request(app).get(`${route}/${newItem1.id}`).expect(HTTP_STATUSES.OK_200, newItem1);
   });
   it('+ PUT fisrt item by id', async () => {
-    const data: IUpdateBlog = {
-      description: 'update description',
-      name: 'update name',
-      websiteUrl: 'https://update.com',
-    };
+    const data: IUpdateBlog = createUpdateBlogData();
 
     await request(app)
       .put(`${route}/${newItem1.id}`)
@@ -286,7 +261,7 @@ describe(route, () => {
     const updatedItem = res.body;
     expect(updatedItem).toEqual({
       ...newItem1,
-      ...data,
+      ...data
     });
 
     await request(app)
@@ -296,13 +271,13 @@ describe(route, () => {
           newItem2,
           {
             ...newItem1,
-            ...data,
-          },
+            ...data
+          }
         ],
         page: 1,
         pagesCount: 1,
         pageSize: 10,
-        totalCount: 2,
+        totalCount: 2
       });
   });
 
@@ -318,7 +293,7 @@ describe(route, () => {
         page: 1,
         pagesCount: 1,
         pageSize: 10,
-        totalCount: 1,
+        totalCount: 1
       });
   });
   it('+ DELETE second item', async () => {
@@ -331,7 +306,7 @@ describe(route, () => {
       page: 1,
       pagesCount: 0,
       pageSize: 10,
-      totalCount: 0,
+      totalCount: 0
     });
   });
 });
