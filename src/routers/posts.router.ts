@@ -4,7 +4,7 @@ import {
   HTTP_STATUSES,
   IOutputModel,
   RequestWithParamsAndBody,
-  RequestWithParamsAndQuery,
+  RequestWithParamsAndQuery
 } from '../models/common.types';
 import { authMiddleware, authTokenMiddleware } from '../middlewares/auth/auth.middleware';
 import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
@@ -15,6 +15,7 @@ import { IQueryPostData } from '../models/posts/query.types';
 import { PostQueryRepository } from '../repositories/posts/posts.query.repo';
 import { IQueryCommentData } from '../models/comments/query.types';
 import { ICreateComment } from '../models/comments/input.types';
+import { commentsInputModelValidation } from '../validators/comments.validator';
 
 export const postsRouter = Router();
 
@@ -26,7 +27,7 @@ postsRouter.get(
       pageNumber: pageNumber ?? 1,
       pageSize: pageSize ?? 10,
       sortBy: sortBy ?? 'createdAt',
-      sortDirection: sortDirection ?? 'desc',
+      sortDirection: sortDirection ?? 'desc'
     };
 
     const posts = await PostQueryRepository.getAll(sortData);
@@ -84,7 +85,7 @@ postsRouter.get(
       pageNumber: pageNumber ?? 1,
       pageSize: pageSize ?? 10,
       sortBy: sortBy ?? 'createdAt',
-      sortDirection: sortDirection ?? 'desc',
+      sortDirection: sortDirection ?? 'desc'
     };
 
     const comments = await PostQueryRepository.getCommentsByPostId(id, sortData);
@@ -94,6 +95,7 @@ postsRouter.get(
 postsRouter.post(
   '/:id/comments',
   authTokenMiddleware,
+  commentsInputModelValidation(),
   async (req: RequestWithParamsAndBody<{ id: string }, ICreateComment>, res: Response) => {
     const { userId } = req;
     const { id } = req.params;
