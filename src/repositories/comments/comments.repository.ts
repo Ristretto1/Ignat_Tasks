@@ -8,7 +8,7 @@ export class CommentRepository {
     return !!res.deletedCount;
   }
   static async updateCommentById(id: string, data: ICommentUpdateModel): Promise<boolean> {
-    const res = await commentCollection.updateOne({ _id: new ObjectId(id) }, data);
+    const res = await commentCollection.updateOne({ _id: new ObjectId(id) }, { $set: data });
     return !!res.matchedCount;
   }
 }
