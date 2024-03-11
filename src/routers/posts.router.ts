@@ -4,7 +4,7 @@ import {
   HTTP_STATUSES,
   IOutputModel,
   RequestWithParamsAndBody,
-  RequestWithParamsAndQuery
+  RequestWithParamsAndQuery,
 } from '../models/common.types';
 import { authMiddleware, authTokenMiddleware } from '../middlewares/auth/auth.middleware';
 import { ICreatePost, IUpdatePost } from '../models/posts/input.types';
@@ -27,7 +27,7 @@ postsRouter.get(
       pageNumber: pageNumber ?? 1,
       pageSize: pageSize ?? 10,
       sortBy: sortBy ?? 'createdAt',
-      sortDirection: sortDirection ?? 'desc'
+      sortDirection: sortDirection ?? 'desc',
     };
 
     const posts = await PostQueryRepository.getAll(sortData);
@@ -80,12 +80,14 @@ postsRouter.get(
     const { pageNumber, pageSize, sortBy, sortDirection } = req.query;
 
     if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+    const post = await PostQueryRepository.getPostById(id);
+    if (!post) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 
     const sortData: IQueryCommentData = {
       pageNumber: pageNumber ?? 1,
       pageSize: pageSize ?? 10,
       sortBy: sortBy ?? 'createdAt',
-      sortDirection: sortDirection ?? 'desc'
+      sortDirection: sortDirection ?? 'desc',
     };
 
     const comments = await PostQueryRepository.getCommentsByPostId(id, sortData);
@@ -101,6 +103,8 @@ postsRouter.post(
     const { id } = req.params;
     const { content } = req.body;
     if (!ObjectId.isValid(id)) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+    const post = await PostQueryRepository.getPostById(id);
+    if (!post) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 
     const comment = await PostService.createCommentById(userId!, id, { content });
     if (comment) return res.status(HTTP_STATUSES.CREATED_201).send(comment);
