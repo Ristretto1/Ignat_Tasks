@@ -22,7 +22,7 @@ usersRouter.get(
   async (req: RequestWithQuery<Partial<IQueryUserData>>, res: Response<IOutputModel<IUserOutput>>) => {
     const sortData: IQueryUserData = {
       pageNumber: req.query.pageNumber ?? 1,
-      pageSize: req.query.pageSize ?? 20,
+      pageSize: req.query.pageSize ?? 10,
       searchEmailTerm: req.query.searchEmailTerm ?? null,
       searchLoginTerm: req.query.searchLoginTerm ?? null,
       sortBy: req.query.sortBy ?? 'createdAt',
