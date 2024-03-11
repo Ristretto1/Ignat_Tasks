@@ -11,6 +11,7 @@ export class CommentService {
     const comment = await CommentQueryRepository.getCommentById(id);
     if (!comment) return false;
 
+
     const dataForUpdate: ICommentUpdateModel = {
       commentatorInfo: {
         userId: comment.commentatorInfo.userId,
